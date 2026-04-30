@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ANTIGRAVITY — Nordic Myth Edition</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --nord-0: #0f1a24;
+      --nord-1: #1c2a36;
+      --nord-2: #2f3f4f;
+      --nord-3: #45576a;
+      --fog: #dfe8ee;
+      --bone: #f0ece4;
+      --brass: #cdb68a;
+      --ice: #9fb3c3;
+      --text: #ebf0f4;
+      --muted: rgba(235, 240, 244, 0.74);
+      --line: rgba(240, 236, 228, 0.2);
+      --radius: 18px;
+      --container: 1240px;
+      --shadow: 0 20px 40px rgba(9, 14, 20, 0.35);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 10% 10%, rgba(159, 179, 195, 0.12), transparent 40%),
+        radial-gradient(circle at 92% 24%, rgba(205, 182, 138, 0.12), transparent 38%),
+        linear-gradient(160deg, #111d29 0%, #162531 34%, #1f2d3a 100%);
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    .container { width: min(var(--container), 92vw); margin: 0 auto; }
+
+    .site-bg {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .cloud {
+      position: absolute;
+      width: clamp(230px, 30vw, 520px);
+      height: clamp(110px, 11vw, 190px);
+      filter: blur(0.6px) drop-shadow(0 8px 20px rgba(10, 16, 24, 0.35));
+      opacity: 0.34;
+      transform: translateX(var(--startX));
+      animation: cloudDrift var(--dur) ease-in-out infinite alternate;
+      will-change: transform;
+    }
+
+    .cloud svg { width: 100%; height: 100%; }
+    .cloud path {
+      fill: rgba(223, 232, 238, 0.8);
+      stroke: rgba(240, 236, 228, 0.25);
+      stroke-width: 1.2;
+    }
+
+    .c1 { top: 8%; left: -8%; --startX: -70px; --dur: 17s; }
+    .c2 { top: 20%; right: -8%; --startX: 60px; --dur: 19s; opacity: 0.27; }
+    .c3 { top: 54%; left: -12%; --startX: -90px; --dur: 22s; opacity: 0.2; }
+    .c4 { top: 68%; right: -10%; --startX: 80px; --dur: 24s; opacity: 0.2; }
+
+    .statue {
+      position: fixed;
+      bottom: -12px;
+      width: clamp(160px, 20vw, 320px);
+      opacity: 0.16;
+      transition: transform 1.2s ease, opacity 1.2s ease;
+      will-change: transform;
+    }
+    .statue svg { width: 100%; height: auto; }
+    .statue path { fill: var(--bone); stroke: rgba(240,236,228,0.2); stroke-width: 1; }
+    .statue.left { left: -86px; transform: translateX(-80px); }
+    .statue.right { right: -86px; transform: translateX(80px) scaleX(-1); }
+    .statue.visible.left { transform: translateX(0); opacity: 0.22; }
+    .statue.visible.right { transform: translateX(0) scaleX(-1); opacity: 0.22; }
+
+    .nav-wrap {
+      position: fixed; inset: 0 0 auto 0; z-index: 1000;
+      transition: background-color .25s ease, backdrop-filter .25s ease, box-shadow .25s ease;
+    }
+    .nav-wrap.scrolled {
+      background: rgba(15, 26, 36, 0.72);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 24px rgba(6, 10, 14, 0.35);
+    }
+    .nav {
+      min-height: 86px;
+      display: flex; align-items: center; justify-content: space-between; gap: 20px;
+    }
+    .logo {
+      font: 400 2rem/1 "Bebas Neue", sans-serif;
+      letter-spacing: 0.08em;
+      color: var(--brass);
+    }
+    .nav-links { display: flex; gap: 24px; color: rgba(235,240,244,.9); font-weight: 600; }
+    .nav-links a { position: relative; }
+    .nav-links a::after {
+      content: "";
+      position: absolute; left: 0; bottom: -6px; width: 0; height: 2px;
+      background: var(--brass);
+      transition: width .25s ease;
+    }
+    .nav-links a:hover::after { width: 100%; }
+
+    .btn {
+      border-radius: 999px; border: 1px solid transparent;
+      font: 400 1.16rem/1 "Bebas Neue", sans-serif; letter-spacing: .05em;
+      padding: 13px 22px; display: inline-flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: transform .25s ease, box-shadow .25s ease, background-color .25s ease;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-main {
+      background: var(--brass); color: #1b2631;
+      box-shadow: 0 10px 24px rgba(25, 35, 46, 0.35);
+    }
+    .btn-outline { border-color: rgba(235,240,244,0.62); color: var(--text); background: transparent; }
+
+    .menu-btn {
+      display: none;
+      width: 42px; height: 42px; border-radius: 10px;
+      border: 1px solid rgba(235,240,244,.48); background: transparent; color: #fff; position: relative;
+    }
+    .menu-btn span, .menu-btn::before, .menu-btn::after {
+      content: ""; position: absolute; left: 11px; width: 18px; height: 2px; background: currentColor;
+      transition: transform .2s ease, opacity .2s ease;
+    }
+    .menu-btn span { top: 20px; } .menu-btn::before { top: 14px; } .menu-btn::after { top: 26px; }
+    .menu-btn[aria-expanded="true"] span { opacity: 0; }
+    .menu-btn[aria-expanded="true"]::before { transform: translateY(6px) rotate(45deg); }
+    .menu-btn[aria-expanded="true"]::after { transform: translateY(-6px) rotate(-45deg); }
+
+    .section { padding: 96px 0; position: relative; }
+    .title {
+      margin: 0 0 26px;
+      font: 400 clamp(2.1rem, 4.6vw, 4.4rem) / .95 "Bebas Neue", sans-serif;
+      color: var(--brass); letter-spacing: .05em;
+    }
+
+    /* NEW STRUCTURE */
+    .hero {
+      min-height: 100vh;
+      padding-top: 146px;
+      display: grid;
+      align-items: center;
+    }
+    .hero-layout {
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      gap: 30px;
+      align-items: end;
+    }
+    .hero h1 {
+      margin: 0 0 18px;
+      font: 400 clamp(3.2rem, 10vw, 8.8rem) / .86 "Bebas Neue", sans-serif;
+      color: var(--bone);
+      text-shadow: 0 8px 22px rgba(10,16,24,.28);
+      letter-spacing: .03em;
+    }
+    .hero p { margin: 0 0 24px; color: var(--muted); max-width: 720px; font-size: clamp(1rem, 1.2vw, 1.12rem); }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 34px; }
+
+    .nord-card {
+      background: linear-gradient(170deg, rgba(21, 34, 46, 0.88), rgba(18, 28, 38, 0.86));
+      border: 1px solid rgba(240,236,228,0.18);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+    .mini-kpi { display: grid; gap: 14px; }
+    .mini-kpi div { border-bottom: 1px solid rgba(240,236,228,.14); padding-bottom: 10px; }
+    .mini-kpi div:last-child { border-bottom: none; }
+    .mini-kpi strong {
+      display: block;
+      font: 400 1.8rem/1 "Bebas Neue", sans-serif;
+      color: var(--brass);
+      letter-spacing: .04em;
+    }
+    .mini-kpi span { color: var(--muted); font-size: .86rem; }
+
+    /* Timeline section */
+    .timeline {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+    .timeline-item {
+      position: relative;
+      padding: 24px 20px 20px 70px;
+      background: rgba(16, 27, 37, 0.86);
+      border: 1px solid rgba(240,236,228,0.16);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .timeline-item .num {
+      position: absolute; left: 18px; top: 16px;
+      width: 36px; height: 36px; border-radius: 8px;
+      display: grid; place-items: center;
+      background: rgba(205,182,138,0.16); color: var(--brass);
+      font: 400 1.4rem/1 "Bebas Neue", sans-serif;
+    }
+    .timeline-item h3 {
+      margin: 0 0 8px; color: var(--bone);
+      font: 400 1.75rem/1 "Bebas Neue", sans-serif; letter-spacing: .04em;
+    }
+    .timeline-item p { margin: 0; color: var(--muted); }
+
+    /* Service split */
+    .service-split {
+      display: grid;
+      grid-template-columns: .9fr 1.1fr;
+      gap: 18px;
+    }
+    .service-menu { display: grid; gap: 12px; }
+    .service-pill {
+      border: 1px solid rgba(240,236,228,.2);
+      border-radius: 12px;
+      padding: 14px 16px;
+      background: rgba(16, 27, 37, .78);
+      color: var(--text);
+      transition: transform .2s ease, border-color .2s ease, background-color .2s ease;
+    }
+    .service-pill:hover {
+      transform: translateX(4px);
+      border-color: var(--brass);
+      background: rgba(24, 37, 50, .9);
+    }
+    .service-article h3 {
+      margin: 0 0 10px; color: var(--brass);
+      font: 400 2.2rem/1 "Bebas Neue", sans-serif; letter-spacing: .04em;
+    }
+    .service-article p { margin: 0 0 8px; color: var(--muted); }
+
+    /* Myth statement band */
+    .myth-band {
+      padding: 26px;
+      border: 1px solid rgba(240,236,228,.2);
+      border-radius: var(--radius);
+      background: linear-gradient(95deg, rgba(17,30,42,.95), rgba(28,40,53,.78));
+      display: grid; gap: 12px;
+    }
+    .myth-band h3 {
+      margin: 0;
+      font: 400 clamp(2rem, 5vw, 3.8rem) / .92 "Bebas Neue", sans-serif;
+      color: var(--bone);
+      letter-spacing: .04em;
+    }
+    .myth-band p { margin: 0; color: var(--muted); }
+
+    /* Reviews carousel-like grid */
+    .reviews {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 16px;
+    }
+    .review { background: rgba(15, 24, 33, 0.88); border: 1px solid rgba(240,236,228,0.18); border-radius: var(--radius); padding: 20px; }
+    .review h4 { margin: 0; color: var(--brass); font: 400 1.7rem/1 "Bebas Neue", sans-serif; }
+    .review small { display: block; margin: 6px 0 10px; color: var(--muted); }
+    .stars { color: var(--brass); letter-spacing: .1em; margin-bottom: 10px; }
+    .review blockquote { margin: 0; font-style: italic; color: #eaf0f4; }
+
+    .cta-shell {
+      display: grid;
+      grid-template-columns: 1fr 430px;
+      gap: 20px;
+      align-items: center;
+    }
+    .cta-shell h2 {
+      margin: 0 0 12px;
+      font: 400 clamp(2.4rem, 6.2vw, 5.1rem) / .9 "Bebas Neue", sans-serif;
+      color: var(--bone);
+      letter-spacing: .04em;
+    }
+    .cta-shell p { margin: 0; color: var(--muted); }
+    .form-card { background: rgba(15,24,33,.9); border: 1px solid rgba(240,236,228,.2); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); }
+    .field { margin-bottom: 12px; }
+    label { display: block; font-size: .84rem; margin-bottom: 6px; color: rgba(235,240,244,.9); }
+    input, select {
+      width: 100%; border-radius: 10px; padding: 12px 13px; color: #fff;
+      border: 1px solid rgba(240,236,228,.24); background: rgba(8,14,20,.62);
+      font: 500 .95rem/1.2 "Manrope", sans-serif;
+      outline: none; transition: border-color .2s ease, box-shadow .2s ease;
+    }
+    input:focus, select:focus { border-color: var(--brass); box-shadow: 0 0 0 3px rgba(205,182,138,.18); }
+
+    footer {
+      padding: 42px 0 20px;
+      border-top: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(16,25,34,0), rgba(8,13,18,.35));
+    }
+    .foot {
+      display: grid;
+      grid-template-columns: 1.2fr .8fr .8fr;
+      gap: 18px;
+      margin-bottom: 16px;
+    }
+    .foot h5 { margin: 0 0 8px; color: var(--brass); font: 400 1.4rem/1 "Bebas Neue", sans-serif; }
+    .foot-links { display: grid; gap: 7px; color: var(--muted); }
+    .socials { display: flex; gap: 10px; margin-top: 12px; }
+    .social {
+      width: 38px; height: 38px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center;
+      border: 1px solid rgba(205,182,138,.42); color: var(--brass); transition: transform .2s ease, background-color .2s ease;
+    }
+    .social:hover { transform: translateY(-2px); background: rgba(205,182,138,.14); }
+    .copy { border-top: 1px solid rgba(240,236,228,.12); padding-top: 14px; font-size: .84rem; color: rgba(235,240,244,.72); }
+
+    /* scroll reveal from edges */
+    .reveal { opacity: 0; transform: translate3d(var(--rx,0), var(--ry,30px), 0); transition: transform .8s cubic-bezier(.22,.61,.36,1), opacity .8s ease; }
+    .reveal.in { opacity: 1; transform: translate3d(0,0,0); }
+    .r-left { --rx: -90px; --ry: 0; }
+    .r-right { --rx: 90px; --ry: 0; }
+    .r-up { --rx: 0; --ry: 70px; }
+    .r-down { --rx: 0; --ry: -70px; }
+
+    @keyframes cloudDrift {
+      0% { transform: translateX(var(--startX)); }
+      100% { transform: translateX(calc(var(--startX) + 50px)); }
+    }
+
+    @media (max-width: 1080px) {
+      .hero-layout, .cta-shell, .service-split { grid-template-columns: 1fr; }
+      .timeline { grid-template-columns: 1fr; }
+      .reviews { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .foot { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .statue { opacity: 0.12; width: 180px; }
+    }
+    @media (max-width: 820px) {
+      .menu-btn { display: block; }
+      .nav-links, .nav-cta {
+        position: absolute; left: 4vw; right: 4vw; display: none;
+        background: rgba(15,26,36,.94); border: 1px solid rgba(240,236,228,.18);
+        border-radius: 14px; padding: 16px;
+      }
+      .nav-links { top: 84px; flex-direction: column; gap: 10px; align-items: flex-start; }
+      .nav-cta { top: 236px; }
+      .nav-wrap.menu-open .nav-links, .nav-wrap.menu-open .nav-cta { display: flex; }
+      .nav-cta .btn { width: 100%; }
+      .reviews, .foot { grid-template-columns: 1fr; }
+      .hero-actions .btn { width: 100%; }
+      .statue { display: none; }
+    }
+    @media (max-width: 620px) {
+      .section { padding: 74px 0; }
+      .hero { padding-top: 118px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="site-bg" aria-hidden="true">
+    <div class="cloud c1">
+      <svg viewBox="0 0 500 200"><path d="M64 128c-28 0-46-19-46-42 0-20 15-37 37-41 8-38 40-63 80-63 30 0 58 14 75 37 6-2 12-3 19-3 26 0 48 19 52 44 28 4 50 25 50 51 0 29-24 53-54 53H64z"/></svg>
+    </div>
+    <div class="cloud c2">
+      <svg viewBox="0 0 500 200"><path d="M58 136c-22 0-40-17-40-37 0-18 14-33 33-36 6-34 36-56 73-56 28 0 52 12 68 32 6-2 12-3 18-3 24 0 45 18 49 40 26 4 46 22 46 45 0 26-22 48-50 48H58z"/></svg>
+    </div>
+    <div class="cloud c3">
+      <svg viewBox="0 0 500 200"><path d="M70 140c-24 0-43-18-43-40 0-17 13-32 31-35 7-32 35-55 72-55 24 0 46 10 62 28 9-3 14-3 22-3 22 0 42 16 47 38 24 3 42 22 42 46 0 27-22 49-49 49H70z"/></svg>
+    </div>
+    <div class="cloud c4">
+      <svg viewBox="0 0 500 200"><path d="M52 130c-20 0-36-15-36-33 0-16 12-29 27-32 8-31 33-53 67-53 25 0 48 10 62 28 8-2 13-3 20-3 22 0 39 15 44 36 24 4 41 20 41 43 0 25-20 46-45 46H52z"/></svg>
+    </div>
+  </div>
+
+  <div class="statue left" id="statueLeft" aria-hidden="true">
+    <svg viewBox="0 0 200 420">
+      <path d="M95 20c24 0 37 16 37 39 0 15-8 27-20 33l8 30h12c18 0 34 14 34 32 0 14-10 28-24 32l10 36-16 10 24 168H46l22-167-16-12 10-35c-14-4-24-18-24-32 0-18 16-32 34-32h12l8-30c-12-6-20-18-20-33 0-23 13-39 23-39z"/>
+    </svg>
+  </div>
+  <div class="statue right" id="statueRight" aria-hidden="true">
+    <svg viewBox="0 0 200 420">
+      <path d="M95 20c24 0 37 16 37 39 0 15-8 27-20 33l8 30h12c18 0 34 14 34 32 0 14-10 28-24 32l10 36-16 10 24 168H46l22-167-16-12 10-35c-14-4-24-18-24-32 0-18 16-32 34-32h12l8-30c-12-6-20-18-20-33 0-23 13-39 23-39z"/>
+    </svg>
+  </div>
+
+  <header class="nav-wrap" id="siteNav">
+    <div class="container nav">
+      <a href="#start" class="logo">ANTIGRAVITY</a>
+      <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-label="Меню"><span></span></button>
+      <nav class="nav-links" id="navLinks">
+        <a href="#model">Модель</a>
+        <a href="#process">Процесс</a>
+        <a href="#myth">Принцип</a>
+        <a href="#contacts">Контакты</a>
+      </nav>
+      <div class="nav-cta">
+        <a href="#contacts" class="btn btn-main">Оставить заявку</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero container section" id="start">
+      <div class="hero-layout">
+        <div>
+          <h1 class="reveal r-left">РЕМОНТ ПОД КОНТРОЛЕМ.<br />ВАШЕ ВРЕМЯ ПОД ЗАЩИТОЙ.</h1>
+          <p class="reveal r-up">
+            ANTIGRAVITY — независимое управление ремонтом для занятых собственников.
+            Мы не выполняем строительные работы и не отправляем бригады. Мы организуем процесс,
+            контролируем подрядчиков, сроки, смету и качество, представляя ваши интересы на объекте.
+          </p>
+          <div class="hero-actions reveal r-up">
+            <a href="#contacts" class="btn btn-main">Рассчитать стоимость</a>
+            <a href="#process" class="btn btn-outline">Как это работает →</a>
+          </div>
+        </div>
+        <aside class="nord-card reveal r-right" id="model">
+          <div class="mini-kpi">
+            <div><strong>87+ объектов</strong><span>управляли от старта до приёмки</span></div>
+            <div><strong>4.9 рейтинг</strong><span>средняя оценка сервиса</span></div>
+            <div><strong>от 3% сметы</strong><span>фиксированная модель оплаты</span></div>
+            <div><strong>24/7 контроль</strong><span>фото, видео, трансляции, сводки</span></div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <h2 class="title reveal r-down" id="process">КАРТА УПРАВЛЕНИЯ ПРОЕКТОМ</h2>
+        <div class="timeline">
+          <article class="timeline-item reveal r-left">
+            <span class="num">1</span>
+            <h3>Диагностика объекта</h3>
+            <p>Аудит текущего состояния, документов и сметы. Если сметы нет — формируем её и задаём архитектуру бюджета под ваши цели.</p>
+          </article>
+          <article class="timeline-item reveal r-right">
+            <span class="num">2</span>
+            <h3>Проверка подрядчиков</h3>
+            <p>Оцениваем кандидатов из нашей базы или аудитируем ваших исполнителей: договор, опыт, график, риски и управляемость команды.</p>
+          </article>
+          <article class="timeline-item reveal r-left">
+            <span class="num">3</span>
+            <h3>Технический надзор</h3>
+            <p>Контролируем технологию, качество и сроки. Ведём удалённую отчётность: фото, видео, live-стримы и прозрачные еженедельные сводки.</p>
+          </article>
+          <article class="timeline-item reveal r-right">
+            <span class="num">4</span>
+            <h3>Финальная приёмка</h3>
+            <p>Представляем вас на сдаче, фиксируем замечания, добиваемся устранения дефектов и закрываем проект в соответствии со стандартом.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container service-split">
+        <div class="service-menu">
+          <a class="service-pill reveal r-left" href="#contacts">Полное управление ремонтом</a>
+          <a class="service-pill reveal r-left" href="#contacts">Независимый технический надзор</a>
+          <a class="service-pill reveal r-left" href="#contacts">Антикризисное восстановление контроля</a>
+        </div>
+        <article class="nord-card service-article reveal r-right">
+          <h3>УСЛУГИ ANTIGRAVITY</h3>
+          <p>Мы создаём управленческий контур вокруг вашего объекта: график, контроль качества, финансовая дисциплина и фиксированная ответственность.</p>
+          <p>Если подрядчики уже выбраны — усиливаем проект независимым надзором. Если ремонт вышел из-под контроля — перезапускаем процессы и возвращаем предсказуемость.</p>
+          <p>Наша роль — не строить, а управлять. Именно это отличает ANTIGRAVITY от строительных компаний.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="myth">
+      <div class="container">
+        <article class="myth-band reveal r-up">
+          <h3>МЫ НЕ СТРОИМ. МЫ УПРАВЛЯЕМ. КАК СТРАТЕГ НАД ПОЛЕМ БИТВЫ.</h3>
+          <p>В античных мифах победа зависела не только от силы, но и от тактики, дисциплины и наблюдения. ANTIGRAVITY действует так же: независимо контролирует процесс и защищает ваши интересы, не будучи частью бригады.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <h2 class="title reveal r-down">ОТЗЫВЫ КЛИЕНТОВ</h2>
+        <div class="reviews">
+          <article class="review reveal r-left">
+            <h4>Алексей М., Москва</h4>
+            <small>Квартира 180 м², под ключ</small>
+            <div class="stars">★★★★★</div>
+            <blockquote>«Постоянно был в командировках. ANTIGRAVITY вёл объект удалённо, отчёты приходили чётко по графику. Сдали вовремя, без сюрпризов».</blockquote>
+          </article>
+          <article class="review reveal r-up">
+            <h4>Марина К., Санкт-Петербург</h4>
+            <small>Дом 320 м²</small>
+            <div class="stars">★★★★★</div>
+            <blockquote>«После двух месяцев хаоса подключили ANTIGRAVITY. Проект сразу стал прозрачным: сроки, бюджет, контроль качества. Отличный результат».</blockquote>
+          </article>
+          <article class="review reveal r-right">
+            <h4>Дмитрий В., Дубай</h4>
+            <small>Инвестиционная квартира 95 м²</small>
+            <div class="stars">★★★★★</div>
+            <blockquote>«Весь ремонт находился за границей. Контроль подрядчиков и приёмку закрыли за меня. Очень сильная управленческая команда».</blockquote>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="contacts">
+      <div class="container cta-shell">
+        <div class="reveal r-left">
+          <h2>ГОТОВЫ ПЕРЕДАТЬ РЕМОНТ ПОД ПРОФЕССИОНАЛЬНЫЙ КОНТРОЛЬ?</h2>
+          <p>Оставьте заявку — свяжемся в течение 2 часов и обсудим формат управления под ваш объект.</p>
+        </div>
+        <form class="form-card reveal r-right" action="#" method="post">
+          <div class="field">
+            <label for="name">Ваше имя</label>
+            <input id="name" type="text" placeholder="Например, Александр" />
+          </div>
+          <div class="field">
+            <label for="phone">Номер телефона</label>
+            <input id="phone" type="tel" placeholder="+7 (___) ___-__-__" />
+          </div>
+          <div class="field">
+            <label for="area">Площадь объекта (м²)</label>
+            <input id="area" type="number" placeholder="120" />
+          </div>
+          <div class="field">
+            <label for="service">Тип услуги</label>
+            <select id="service">
+              <option>Полное управление</option>
+              <option>Технический надзор</option>
+              <option>Антикризис</option>
+              <option>Не знаю пока</option>
+            </select>
+          </div>
+          <button class="btn btn-main" style="width:100%; border:none; margin-top:8px;" type="submit">Отправить заявку</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="foot">
+        <div>
+          <div class="logo">ANTIGRAVITY</div>
+          <p style="color:var(--muted); margin:10px 0 0;">Управление ремонтом. Удалённо.</p>
+          <div class="socials">
+            <a href="#" class="social" aria-label="Telegram">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M21.3 3.2L2.7 10.5c-1.3.5-1.3 2.3 0 2.8l4.7 1.7 1.8 5.5c.4 1.2 1.9 1.6 2.9.7l2.6-2.4 4.5 3.3c1 .7 2.4.2 2.7-1L23.9 5c.3-1.3-1.2-2.3-2.6-1.8Z" stroke="currentColor" stroke-width="1.6"/></svg>
+            </a>
+            <a href="#" class="social" aria-label="WhatsApp">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M20 11.9A8 8 0 0 1 8.6 19l-3.6 1 1-3.5A8 8 0 1 1 20 11.9Z" stroke="currentColor" stroke-width="1.6"/><path d="M9 8.8c.2-.5.5-.5.8-.5h.7c.2 0 .5 0 .7.5.2.4.7 1.8.8 1.9.1.1.1.3 0 .5-.1.2-.2.3-.3.4-.2.2-.4.4-.1.8.3.4 1.2 2 3 2.7.4.2.6.1.8-.1.2-.2.9-1 1.1-1.3.2-.3.4-.3.7-.2.3.1 1.7.8 2 .9.3.2.5.3.6.4.1.2.1.8-.2 1.5-.3.7-1.5 1.4-2.1 1.4-.5 0-1.2.1-4.1-1.1-3.5-1.4-5.7-4.9-5.9-5.2-.2-.3-1.4-1.8-1.4-3.4 0-1.6.8-2.4 1.1-2.8Z" fill="currentColor"/></svg>
+            </a>
+          </div>
+        </div>
+        <div>
+          <h5>Навигация</h5>
+          <div class="foot-links">
+            <a href="#model">Модель</a>
+            <a href="#process">Процесс</a>
+            <a href="#myth">Принцип</a>
+            <a href="#contacts">Контакты</a>
+          </div>
+        </div>
+        <div>
+          <h5>Контакты</h5>
+          <div class="foot-links">
+            <span>+7 (999) 123-45-67</span>
+            <span>hello@antigravity.pm</span>
+            <span>Москва / Санкт-Петербург / удалённо</span>
+          </div>
+        </div>
+      </div>
+      <div class="copy">© 2025 ANTIGRAVITY. Все права защищены.</div>
+    </div>
+  </footer>
+
+  <script>
+    const nav = document.getElementById("siteNav");
+    const menuBtn = document.getElementById("menuBtn");
+    const statueLeft = document.getElementById("statueLeft");
+    const statueRight = document.getElementById("statueRight");
+
+    function setNav() {
+      nav.classList.toggle("scrolled", window.scrollY > 24);
+    }
+    setNav();
+    window.addEventListener("scroll", setNav, { passive: true });
+
+    menuBtn.addEventListener("click", () => {
+      const opened = nav.classList.toggle("menu-open");
+      menuBtn.setAttribute("aria-expanded", String(opened));
+    });
+
+    document.querySelectorAll('a[href^="#"]').forEach((link) => {
+      link.addEventListener("click", (e) => {
+        const id = link.getAttribute("href");
+        if (!id || id === "#") return;
+        const target = document.querySelector(id);
+        if (!target) return;
+        e.preventDefault();
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+        nav.classList.remove("menu-open");
+        menuBtn.setAttribute("aria-expanded", "false");
+      });
+    });
+
+    const revealEls = document.querySelectorAll(".reveal");
+    const io = new IntersectionObserver((entries, observer) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("in");
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0.15, rootMargin: "0px 0px -7% 0px" });
+    revealEls.forEach((el) => io.observe(el));
+
+    // Statue reveal and gentle parallax
+    let statuesVisible = false;
+    function animateBackground() {
+      const y = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = docHeight > 0 ? y / docHeight : 0;
+
+      if (!statuesVisible && y > 120) {
+        statuesVisible = true;
+        statueLeft.classList.add("visible");
+        statueRight.classList.add("visible");
+      }
+
+      const leftShift = Math.min(22, y * 0.018);
+      const rightShift = Math.min(22, y * 0.018);
+      statueLeft.style.transform = `translateX(${leftShift}px) translateY(${Math.sin(y * 0.002) * 5}px)`;
+      statueRight.style.transform = `translateX(${-rightShift}px) scaleX(-1) translateY(${Math.cos(y * 0.002) * 5}px)`;
+      statueLeft.style.opacity = String(0.16 + progress * 0.08);
+      statueRight.style.opacity = String(0.16 + progress * 0.08);
+    }
+    animateBackground();
+    window.addEventListener("scroll", animateBackground, { passive: true });
+  </script>
+</body>
+</html>
