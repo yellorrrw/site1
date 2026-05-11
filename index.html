@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AXIS — Независимый контроль ремонта и строительства</title>
-  <meta name="description" content="AXIS представляет интересы клиента: контроль качества, бюджета, сроков и подрядчиков. Удалённые фото/видео отчёты.">
+  <title>AXIS — Управление ремонтом и строительством</title>
+  <meta name="description" content="AXIS — независимое управление ремонтом и строительством: контролируем подрядчиков, сроки, бюджет и качество в интересах заказчика.">
   <link rel="preload" as="image" href="hero.webp">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,17 +13,21 @@
   <style>
     /* ─── TOKENS ─────────────────────────────────────── */
     :root {
-      --bg:       #080808;
-      --surface:  #0F0F0F;
-      --s2:       #141414;
-      --text:     #F0EDE8;
-      --muted:    #4C4844;
-      --accent:   #C4A46B;
-      --accent-d: #A8873A;
-      --danger:   #A04040;
-      --border:   rgba(240,237,232,.06);
-      --border-a: rgba(196,164,107,.22);
-      --r: 0px;
+      --bg:       #FFFFFF;
+      --bg-2:     #F7FAFF;
+      --surface:  #FFFFFF;
+      --s2:       #F6F7FB;
+      --text:     #0B1220;
+      --muted:    #475569;
+      --muted-2:  #64748B;
+      --accent:   #1D4ED8;
+      --accent-d: #1E40AF;
+      --danger:   #DC2626;
+      --border:   rgba(0,0,0,0.08);
+      --border-a: rgba(29,78,216,0.14);
+      --shadow:   0 18px 50px rgba(2, 6, 23, 0.08);
+      --radius:   18px;
+      --radius-sm: 14px;
     }
 
     /* ─── RESET ──────────────────────────────────────── */
@@ -32,31 +36,19 @@
     body {
       background:var(--bg);
       color:var(--text);
-      font-family:'Syne', sans-serif;
+      font-family:'Inter', 'Syne', sans-serif;
       font-weight:400;
       line-height:1.6;
       overflow-x:hidden;
-      cursor:none;
+      cursor:default;
     }
     a { color:inherit; text-decoration:none; }
     img { display:block; }
-    button, input, select, textarea { font:inherit; color:inherit; background:none; border:none; outline:none; cursor:none; }
+    button, input, select, textarea { font:inherit; color:inherit; background:none; border:none; outline:none; cursor:pointer; }
     ul { list-style:none; }
 
     /* ─── CURSOR ─────────────────────────────────────── */
-    #cursor {
-      position:fixed;
-      top:0; left:0;
-      width:8px; height:8px;
-      background:var(--accent);
-      border-radius:50%;
-      pointer-events:none;
-      z-index:9999;
-      transform:translate(-50%,-50%);
-      transition:transform .12s ease, width .2s ease, height .2s ease, background .2s ease;
-      mix-blend-mode:difference;
-    }
-    #cursor.grow { width:32px; height:32px; background:rgba(196,164,107,.4); }
+    #cursor { display:none; }
 
     /* ─── GRAIN OVERLAY ──────────────────────────────── */
     body::after {
@@ -132,7 +124,7 @@
       border-bottom:1px solid transparent;
     }
     .nav.scrolled {
-      background:rgba(8,8,8,.92);
+      background:rgba(255,255,255,.85);
       backdrop-filter:blur(16px) saturate(180%);
       border-bottom-color:var(--border);
     }
@@ -185,10 +177,11 @@
       color:var(--accent);
       padding:10px 22px;
       transition:background .2s, color .2s, border-color .2s;
+      border-radius:99px;
     }
     .nav-cta:hover {
       background:var(--accent);
-      color:var(--bg);
+      color:#fff;
       border-color:var(--accent);
     }
 
@@ -217,7 +210,7 @@
     .mobile-menu {
       position:fixed;
       inset:0;
-      background:rgba(8,8,8,.98);
+      background:rgba(255,255,255,.98);
       display:flex;
       flex-direction:column;
       align-items:center;
@@ -245,7 +238,7 @@
       position:relative;
       min-height:100svh;
       display:grid;
-      grid-template-columns:1fr 1fr;
+      grid-template-columns:1.2fr 0.8fr;
       border-top:none;
       overflow:hidden;
     }
@@ -256,17 +249,47 @@
       z-index:2;
       display:flex;
       flex-direction:column;
-      justify-content:flex-end;
-      padding:140px 72px 120px;
-      background:var(--bg);
+      justify-content:center;
+      padding:140px 72px 100px;
+      background:transparent;
+    }
+    .hero-right {
+      position:relative;
+      z-index:2;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:140px 72px 100px 0;
+    }
+    .hero-form-card {
+      background:rgba(255,255,255,0.9);
+      backdrop-filter:blur(20px);
+      border:1px solid var(--border);
+      padding:40px;
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      width:100%;
+      max-width:420px;
+      opacity:0;
+      transform:translateX(30px);
+      transition:opacity 0.8s ease 0.6s, transform 0.8s ease 0.6s;
+    }
+    .hero.loaded .hero-form-card { opacity:1; transform:none; }
+    .hero-form-title {
+      font-family:'Cormorant', serif;
+      font-size:28px;
+      font-weight:400;
+      margin-bottom:20px;
+      line-height:1.2;
     }
     .hero-eyebrow { margin-bottom:28px; }
     .hero-heading {
       font-family:'Cormorant', serif;
-      font-size:clamp(68px,9vw,128px);
-      font-weight:300;
-      line-height:.86;
+      font-size:clamp(52px,7vw,100px);
+      font-weight:400;
+      line-height:.95;
       letter-spacing:-.01em;
+      margin-bottom:24px;
     }
     .hero-heading .line { display:block; overflow:hidden; }
     .hero-heading .line span {
@@ -279,11 +302,10 @@
     .hero.loaded .hero-heading .line span { transform:translateY(0); }
 
     .hero-subtext {
-      margin-top:28px;
-      max-width:38ch;
-      font-size:15px;
-      line-height:1.7;
-      color:rgba(240,237,232,.45);
+      max-width:44ch;
+      font-size:17px;
+      line-height:1.6;
+      color:var(--muted);
       opacity:0;
       transform:translateY(18px);
       transition:opacity .9s ease .5s, transform .9s ease .5s;
@@ -303,7 +325,7 @@
 
     .btn-primary {
       background:var(--accent);
-      color:var(--bg);
+      color:#fff;
       font-family:'Syne', sans-serif;
       font-size:12px;
       font-weight:700;
@@ -311,6 +333,7 @@
       text-transform:uppercase;
       padding:16px 34px;
       transition:background .2s, transform .2s;
+      border-radius:var(--radius-sm);
     }
     .btn-primary:hover { background:var(--accent-d); transform:translateY(-1px); }
 
@@ -334,15 +357,20 @@
 
     /* right col — image */
     .hero-image-wrap {
-      position:relative;
+      position:absolute;
+      inset:0;
       overflow:hidden;
+      z-index:0;
     }
     .hero-image-wrap::before {
       content:'';
       position:absolute;
       inset:0;
-      background:linear-gradient(to right, var(--bg) 0%, transparent 18%),
-                 linear-gradient(to bottom, rgba(8,8,8,.3) 0%, transparent 30%, rgba(8,8,8,.5) 100%);
+      background:
+        radial-gradient(circle at 20% 30%, rgba(29, 78, 216, 0.05), transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(29, 78, 216, 0.05), transparent 40%),
+        linear-gradient(to right, var(--bg) 0%, transparent 30%),
+        linear-gradient(to bottom, rgba(255,255,255,0.4) 0%, transparent 40%, rgba(255,255,255,0.6) 100%);
       z-index:1;
     }
     .hero-img {
@@ -353,6 +381,8 @@
       transform:scale(1.06);
       transition:transform 8s ease;
       will-change:transform;
+      opacity:0.12;
+      filter:blur(1px);
     }
     .hero.loaded .hero-img { transform:scale(1); }
 
@@ -361,7 +391,7 @@
       position:absolute;
       left:0; right:0; bottom:0;
       z-index:3;
-      background:rgba(8,8,8,.75);
+      background:rgba(255,255,255,.75);
       backdrop-filter:blur(10px);
       border-top:1px solid var(--border);
     }
@@ -395,7 +425,7 @@
     .marquee-strip {
       border-top:1px solid var(--border);
       border-bottom:1px solid var(--border);
-      background:var(--surface);
+      background:var(--bg-2);
       overflow:hidden;
       padding:14px 0;
     }
@@ -439,12 +469,14 @@
       position:relative;
     }
     .panel-bad {
-      background:var(--surface);
+      background:var(--bg);
       border:1px solid var(--border);
+      border-radius:var(--radius);
     }
     .panel-good {
-      background:var(--s2);
+      background:var(--bg-2);
       border:1px solid var(--border-a);
+      border-radius:var(--radius);
     }
     .panel-head {
       font-family:'Cormorant', serif;
@@ -492,13 +524,15 @@
       gap:2px;
     }
     .service-card {
-      background:var(--surface);
+      background:var(--bg);
       border:1px solid var(--border);
       padding:48px;
       position:relative;
       overflow:hidden;
-      transition:border-color .3s;
+      transition:border-color .3s, box-shadow .3s;
+      border-radius:var(--radius);
     }
+    .service-card:hover { border-color:var(--border-a); box-shadow:var(--shadow); }
     .service-card::before {
       content:'';
       position:absolute;
@@ -549,12 +583,13 @@
       grid-template-columns:90px 1fr;
       gap:32px;
       align-items:start;
-      background:var(--surface);
+      background:var(--bg);
       border:1px solid var(--border);
       padding:36px 48px;
       position:relative;
       overflow:hidden;
       transition:border-color .3s;
+      border-radius:var(--radius);
     }
     .process-item::after {
       content:'';
@@ -594,16 +629,18 @@
       gap:2px;
     }
     .tariff {
-      background:var(--surface);
+      background:var(--bg);
       border:1px solid var(--border);
       padding:40px 36px;
       display:flex;
       flex-direction:column;
       position:relative;
-      transition:border-color .3s, background .3s;
+      transition:border-color .3s, background .3s, box-shadow .3s;
+      border-radius:var(--radius);
     }
+    .tariff:hover { box-shadow:var(--shadow); }
     .tariff.featured {
-      background:var(--s2);
+      background:var(--bg-2);
       border-color:var(--border-a);
     }
     .tariff.featured::before {
@@ -669,12 +706,13 @@
       gap:2px;
     }
     .contacts-info {
-      background:var(--surface);
+      background:var(--bg);
       border:1px solid var(--border);
       padding:56px;
       display:flex;
       flex-direction:column;
       gap:28px;
+      border-radius:var(--radius);
     }
     .contacts-brand {
       font-family:'Cormorant', serif;
@@ -704,21 +742,23 @@
     }
 
     .contacts-form {
-      background:var(--s2);
+      background:var(--bg-2);
       border:1px solid var(--border);
       padding:48px;
+      border-radius:var(--radius);
     }
     .form { display:grid; gap:12px; }
     .field {
       width:100%;
       border:1px solid var(--border);
-      background:rgba(8,8,8,.8);
+      background:var(--bg);
       padding:14px 16px;
       font-size:14px;
-      transition:border-color .2s;
+      transition:border-color .2s, box-shadow .2s;
+      border-radius:var(--radius-sm);
     }
     .field::placeholder { color:var(--muted); }
-    .field:focus { border-color:var(--border-a); }
+    .field:focus { border-color:var(--accent); box-shadow:0 0 0 4px var(--border-a); }
     select.field { appearance:none; color:var(--muted); }
     select.field.sel { color:var(--text); }
     textarea.field { resize:vertical; min-height:120px; }
@@ -726,7 +766,7 @@
       width:100%;
       margin-top:6px;
       background:var(--accent);
-      color:var(--bg);
+      color:#fff;
       font-family:'Syne', sans-serif;
       font-size:12px;
       font-weight:700;
@@ -734,6 +774,7 @@
       text-transform:uppercase;
       padding:16px;
       transition:background .2s, transform .15s;
+      border-radius:var(--radius-sm);
     }
     .form-submit:hover { background:var(--accent-d); transform:translateY(-1px); }
     .form-note { font-size:11px; color:var(--muted); margin-top:10px; }
@@ -799,8 +840,9 @@
 
     /* ─── RESPONSIVE ──────────────────────────────────── */
     @media (max-width:1100px) {
-      .hero { grid-template-columns:1fr; min-height:100svh; }
-      .hero-left { padding:120px 40px 200px; justify-content:center; }
+      .hero { grid-template-columns:1fr; min-height:auto; }
+      .hero-left { padding:120px 40px 60px; justify-content:center; align-items:center; text-align:center; }
+      .hero-right { padding:0 40px 140px; }
       .hero-image-wrap {
         position:absolute;
         inset:0;
@@ -808,12 +850,14 @@
       }
       .hero-image-wrap::before {
         background:linear-gradient(to bottom,
-          rgba(8,8,8,.65) 0%,
-          rgba(8,8,8,.4) 50%,
-          rgba(8,8,8,.85) 100%);
+          rgba(255,255,255,0.7) 0%,
+          rgba(255,255,255,0.5) 50%,
+          rgba(255,255,255,0.8) 100%);
       }
       .hero-left { position:relative; z-index:2; background:transparent; }
-      .hero-heading { color:#fff; }
+      .hero-heading { color:var(--text); }
+      .hero-subtext { margin-inline:auto; }
+      .hero-actions { justify-content:center; }
     }
     @media (max-width:900px) {
       .container { width:calc(100% - 48px); }
@@ -886,7 +930,7 @@
   <!-- NAV -->
   <header class="nav" id="nav">
     <div class="container nav-inner">
-      <a class="nav-logo" href="#hero">AX<span>I</span>S</a>
+      <a class="nav-logo" href="#hero">AXIS</a>
       <nav>
         <ul class="nav-links">
           <li><a href="#services">Услуги</a></li>
@@ -918,19 +962,18 @@
         <p class="eyebrow hero-eyebrow">Независимый контроль</p>
 
         <h1 class="hero-heading">
-          <span class="line"><span>Контроль.</span></span>
-          <span class="line"><span>Сроки.</span></span>
-          <span class="line"><span>Бюджет.</span></span>
+          <span class="line"><span>Контроль и управление</span></span>
+          <span class="line"><span>строительством</span></span>
+          <span class="line"><span>без головной боли</span></span>
         </h1>
 
         <p class="hero-subtext">
-          Управляем ремонтом и строительством в ваших интересах.<br>
-          Пока вы занимаетесь своим делом.
+          Защитим ваш бюджет, качество и сроки. Профессиональный аудит и сопровождение элитного ремонта и строительства.
         </p>
 
         <div class="hero-actions">
-          <a class="btn-primary" href="#contacts">Оставить заявку</a>
-          <a class="btn-ghost" href="#process">Как это работает <span class="arrow">→</span></a>
+          <a class="btn-primary" href="#contacts">Получить консультацию</a>
+          <a class="btn-ghost" href="#process">Как мы работаем <span class="arrow">→</span></a>
         </div>
 
         <!-- scroll indicator -->
@@ -940,14 +983,27 @@
         </div>
       </div>
 
-      <!-- right — photo -->
+      <div class="hero-right">
+        <div class="hero-form-card">
+          <h2 class="hero-form-title">Заказать аудит стройки</h2>
+          <form class="form" action="#" method="post">
+            <input class="field" type="text" placeholder="Имя" name="name" required>
+            <input class="field" type="tel" placeholder="Телефон" name="phone" required>
+            <textarea class="field" placeholder="Описание проекта (площадь, стадия)" name="message" style="min-height:80px"></textarea>
+            <button class="form-submit" type="submit">Отправить заявку</button>
+          </form>
+          <p class="form-note" style="text-align:center">Свяжемся в течение 2 часов. Без спама.</p>
+        </div>
+      </div>
+
+      <!-- background decoration -->
       <div class="hero-image-wrap">
         <img
           class="hero-img"
-          src="hero.webp"
-          alt="Архитектурный объект AXIS"
-          width="760"
-          height="1020"
+          src="assets/axis-reference.png"
+          alt="AXIS Architecture Reference"
+          width="1920"
+          height="1080"
           loading="eager"
           decoding="async"
         >
@@ -968,18 +1024,18 @@
     <div class="marquee-strip" aria-hidden="true">
       <div class="marquee-track">
         <!-- two copies for seamless loop -->
-        <span class="marquee-item">Технический надзор</span>
-        <span class="marquee-item">Контроль качества</span>
-        <span class="marquee-item">Управление бюджетом</span>
-        <span class="marquee-item">Удалённые отчёты</span>
-        <span class="marquee-item">Антикризис</span>
+        <span class="marquee-item">Независимый контроль</span>
         <span class="marquee-item">Защита интересов клиента</span>
-        <span class="marquee-item">Технический надзор</span>
-        <span class="marquee-item">Контроль качества</span>
         <span class="marquee-item">Управление бюджетом</span>
-        <span class="marquee-item">Удалённые отчёты</span>
-        <span class="marquee-item">Антикризис</span>
+        <span class="marquee-item">Технический надзор</span>
+        <span class="marquee-item">Контроль сроков</span>
+        <span class="marquee-item">Качество исполнения</span>
+        <span class="marquee-item">Независимый контроль</span>
         <span class="marquee-item">Защита интересов клиента</span>
+        <span class="marquee-item">Управление бюджетом</span>
+        <span class="marquee-item">Технический надзор</span>
+        <span class="marquee-item">Контроль сроков</span>
+        <span class="marquee-item">Качество исполнения</span>
       </div>
     </div>
 
@@ -991,6 +1047,9 @@
           <div class="sec-divider-line"></div>
         </div>
         <h2 class="display reveal">Вы <em>узнаёте</em><br>себя?</h2>
+        <p class="reveal" style="margin-top:20px;color:var(--muted);font-size:17px;line-height:1.6;max-width:60ch;--d:120ms">
+          Стройка — это всегда стресс. AXIS берет на себя контроль, чтобы вы могли сосредоточиться на главном.
+        </p>
         <div class="problem-grid" style="margin-top:56px">
 
           <article class="panel panel-bad reveal">
@@ -999,11 +1058,11 @@
               Типичные проблемы
             </div>
             <ul class="panel-list">
-              <li><span class="li-mark">✗</span><span>Подрядчики срывают сроки и просят доплату</span></li>
-              <li><span class="li-mark">✗</span><span>Качество работ не соответствует смете</span></li>
-              <li><span class="li-mark">✗</span><span>Нет времени постоянно быть на объекте</span></li>
-              <li><span class="li-mark">✗</span><span>Непонятно за что платишь и куда ушли деньги</span></li>
-              <li><span class="li-mark">✗</span><span>Переделки после сдачи за свой счёт</span></li>
+              <li><span class="li-mark">✗</span><span>Срывы сроков и постоянное увеличение сметы</span></li>
+              <li><span class="li-mark">✗</span><span>Качество работ не соответствует ожиданиям и нормам</span></li>
+              <li><span class="li-mark">✗</span><span>Нет времени на постоянные визиты и контроль объекта</span></li>
+              <li><span class="li-mark">✗</span><span>Подрядчики скрывают ошибки за отделочными работами</span></li>
+              <li><span class="li-mark">✗</span><span>Конфликты и непонимание реального статуса стройки</span></li>
             </ul>
           </article>
 
@@ -1013,11 +1072,11 @@
               Как мы решаем
             </div>
             <ul class="panel-list">
-              <li><span class="li-mark">✓</span><span>Жёсткий контроль сроков и графика работ</span></li>
-              <li><span class="li-mark">✓</span><span>Независимая проверка качества на каждом этапе</span></li>
-              <li><span class="li-mark">✓</span><span>Фото и видеоотчёты — вы видите всё удалённо</span></li>
-              <li><span class="li-mark">✓</span><span>Прозрачный бюджет и контроль каждой траты</span></li>
-              <li><span class="li-mark">✓</span><span>Представляем ваши интересы при приёмке</span></li>
+              <li><span class="li-mark">✓</span><span>Жёсткий контроль графика и каждой копейки бюджета</span></li>
+              <li><span class="li-mark">✓</span><span>Профессиональная техприемка каждого этапа работ</span></li>
+              <li><span class="li-mark">✓</span><span>Удалённый контроль: фото и видеоотчеты в реальном времени</span></li>
+              <li><span class="li-mark">✓</span><span>Своевременное выявление и устранение брака</span></li>
+              <li><span class="li-mark">✓</span><span>Полная прозрачность и ваше спокойствие</span></li>
             </ul>
           </article>
 
@@ -1029,7 +1088,7 @@
     <section class="section" id="services">
       <div class="container">
         <div class="sec-divider reveal">
-          <p class="eyebrow">Что мы делаем</p>
+          <p class="eyebrow">Чем мы занимаемся</p>
           <div class="sec-divider-line"></div>
         </div>
         <h2 class="display reveal">Услуги</h2>
@@ -1038,40 +1097,70 @@
 
           <article class="service-card reveal">
             <div class="service-icon">
-              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="2.5"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
             </div>
             <div class="service-num">01</div>
-            <h3 class="service-title">Технический надзор</h3>
-            <p class="service-text">Контролируем работу ваших подрядчиков. Выезды на объект, фотофиксация, проверка соответствия смете и нормативам.</p>
+            <h3 class="service-title">Управление стройкой</h3>
+            <p class="service-text">Полное сопровождение объекта от идеи до финала: подбор подрядчиков, график, бюджет и контроль всех этапов.</p>
           </article>
 
           <article class="service-card reveal" style="--d:100ms">
             <div class="service-icon">
-              <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
             </div>
             <div class="service-num">02</div>
-            <h3 class="service-title">Полное управление</h3>
-            <p class="service-text">Берём объект полностью: подбор подрядчиков, календарный план, контроль бюджета, отчётность и сопровождение сдачи.</p>
+            <h3 class="service-title">Контроль подрядчиков</h3>
+            <p class="service-text">Мы — ваши глаза и уши. Проверяем работу строителей, требуем соблюдения технологий и исправления ошибок.</p>
           </article>
 
           <article class="service-card reveal" style="--d:200ms">
             <div class="service-icon">
-              <svg viewBox="0 0 24 24"><path d="M12 4l8 14H4L12 4z"/><line x1="12" y1="9" x2="12" y2="13"/><circle cx="12" cy="16" r=".5" fill="currentColor"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
             </div>
             <div class="service-num">03</div>
-            <h3 class="service-title">Антикризис</h3>
-            <p class="service-text">Подключаемся к проблемным объектам: срыв сроков, перерасход, конфликт с подрядчиками. Восстанавливаем управляемость.</p>
+            <h3 class="service-title">Оптимизация бюджета</h3>
+            <p class="service-text">Анализируем сметы, пресекаем необоснованные доплаты и помогаем экономить без потери качества.</p>
           </article>
 
           <article class="service-card reveal" style="--d:300ms">
             <div class="service-icon">
-              <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="15" rx="1"/><polyline points="17 2 12 7 7 2"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
             </div>
             <div class="service-num">04</div>
-            <h3 class="service-title">Удалённый контроль</h3>
-            <p class="service-text">Вы не обязаны быть на объекте. Фото/видеоотчёты, еженедельные сводки, коммуникация с подрядчиками от вашего имени.</p>
+            <h3 class="service-title">Отчёты и фиксация</h3>
+            <p class="service-text">Регулярная фото и видеофиксация всех скрытых работ. Вы всегда знаете, что происходит на объекте.</p>
           </article>
 
+        </div>
+      </div>
+    </section>
+
+    <!-- ADVANTAGES -->
+    <section class="section" id="advantages">
+      <div class="container">
+        <div class="sec-divider reveal">
+          <p class="eyebrow">Наши преимущества</p>
+          <div class="sec-divider-line"></div>
+        </div>
+        <h2 class="display reveal">Почему <em>выбирают</em> нас</h2>
+
+        <div class="services-grid" style="margin-top:56px">
+          <article class="service-card reveal">
+            <h3 class="service-title">Опыт с элитными объектами</h3>
+            <p class="service-text">Работаем со сложными архитектурными проектами и премиальными материалами.</p>
+          </article>
+          <article class="service-card reveal" style="--d:100ms">
+            <h3 class="service-title">Гарантия сроков и бюджета</h3>
+            <p class="service-text">Фиксируем контрольные точки в договоре и жестко контролируем их соблюдение.</p>
+          </article>
+          <article class="service-card reveal" style="--d:200ms">
+            <h3 class="service-title">Проверенные подрядчики</h3>
+            <p class="service-text">Поможем выбрать надежных исполнителей или проведем аудит ваших.</p>
+          </article>
+          <article class="service-card reveal" style="--d:300ms">
+            <h3 class="service-title">Фото и видеоотчёты</h3>
+            <p class="service-text">Вы получаете регулярные сводки с объекта, даже находясь в другой стране.</p>
+          </article>
         </div>
       </div>
     </section>
@@ -1084,37 +1173,37 @@
           <div class="sec-divider-line"></div>
         </div>
         <h2 class="display reveal">Процесс</h2>
-        <p class="reveal" style="margin-top:20px;color:rgba(240,237,232,.42);font-size:15px;line-height:1.75;max-width:60ch;--d:120ms">
-          AXIS — не строительная компания. Мы управленческая сторона, которая защищает интересы клиента на каждом шаге.
+        <p class="reveal" style="margin-top:20px;color:var(--muted);font-size:17px;line-height:1.6;max-width:60ch;--d:120ms">
+          AXIS — это независимая сторона. Мы защищаем ваши интересы на каждом этапе взаимодействия.
         </p>
 
         <div class="process-list">
           <article class="process-item reveal">
             <div class="process-num">01</div>
             <div class="process-body">
-              <h3 class="process-title">Заявка и аудит ситуации</h3>
-              <p class="process-text">Разбираем ваш объект, документы, подрядчиков и текущие риски. Формируем первичную картину.</p>
+              <h3 class="process-title">Заявка на сайте</h3>
+              <p class="process-text">Оставьте запрос, и мы свяжемся с вами для первичного обсуждения проекта.</p>
             </div>
           </article>
           <article class="process-item reveal" style="--d:80ms">
             <div class="process-num">02</div>
             <div class="process-body">
-              <h3 class="process-title">Стратегия контроля</h3>
-              <p class="process-text">Формируем план сроков, бюджетные рамки, контрольные точки и формат отчётности.</p>
+              <h3 class="process-title">Бесплатная консультация</h3>
+              <p class="process-text">Разбираем вашу ситуацию, выявляем риски и формируем стратегию контроля.</p>
             </div>
           </article>
           <article class="process-item reveal" style="--d:160ms">
             <div class="process-num">03</div>
             <div class="process-body">
-              <h3 class="process-title">Запуск сопровождения</h3>
-              <p class="process-text">Подключаемся к подрядчикам, фиксируем правила взаимодействия и зоны ответственности.</p>
+              <h3 class="process-title">Договор и условия</h3>
+              <p class="process-text">Согласовываем график выездов, формат отчетов и фиксируем ответственность.</p>
             </div>
           </article>
           <article class="process-item reveal" style="--d:240ms">
             <div class="process-num">04</div>
             <div class="process-body">
-              <h3 class="process-title">Еженедельный контроль</h3>
-              <p class="process-text">Выезды, фото/видео, проверка смет и сроков, согласование корректировок с вашей стороны.</p>
+              <h3 class="process-title">Начало работы</h3>
+              <p class="process-text">Берем объект под контроль, управляем подрядчиками и бюджетом до полной сдачи.</p>
             </div>
           </article>
         </div>
@@ -1176,37 +1265,36 @@
           <p class="eyebrow">Контакты</p>
           <div class="sec-divider-line"></div>
         </div>
-        <h2 class="display reveal">Оставьте<br><em>заявку</em></h2>
+        <h2 class="display reveal">Оставьте <em>заявку</em><br>на консультацию</h2>
 
-        <div class="contacts-grid">
+        <div class="contacts-grid" style="margin-top:56px">
 
           <div class="contacts-info reveal">
-            <div class="contacts-brand">AX<em>I</em>S</div>
+            <div class="contacts-brand" style="font-size:clamp(48px,8vw,80px)">AXIS</div>
             <p class="contacts-copy">
-              Независимый контроль ремонта и строительства. Мы представляем ваши интересы — без подрядных работ и без конфликта интересов.
+              Мы не строительная компания. AXIS — ваше доверенное лицо на объекте. Гарантируем прозрачность, качество и соблюдение ваших интересов.
             </p>
             <ul class="contacts-checklist">
-              <li>Консультация по объекту и рискам</li>
-              <li>Прозрачный формат сопровождения</li>
-              <li>Удалённый контроль через фото/видео отчёты</li>
+              <li>Бесплатный первичный аудит ситуации</li>
+              <li>Индивидуальный план контроля</li>
+              <li>Еженедельные детальные отчеты</li>
+              <li>Снятие всех забот по работе с подрядчиками</li>
             </ul>
           </div>
 
           <div class="contacts-form reveal" style="--d:120ms">
             <form class="form" action="#" method="post">
-              <input class="field" type="text" placeholder="Имя" name="name" autocomplete="given-name">
-              <input class="field" type="tel" placeholder="+7 (___) ___-__-__" name="phone" required autocomplete="tel">
-              <select class="field" id="ptype" name="type">
-                <option value="" disabled selected>Тип проекта</option>
-                <option value="apartment">Ремонт квартиры</option>
-                <option value="house">Строительство дома</option>
-                <option value="tech">Технадзор</option>
-                <option value="crisis">Антикризис</option>
+              <input class="field" type="text" placeholder="Имя" name="name" required autocomplete="given-name">
+              <input class="field" type="tel" placeholder="Телефон" name="phone" required autocomplete="tel">
+              <select class="field sel" name="type">
+                <option value="consultation">Нужна консультация</option>
+                <option value="audit">Заказать аудит объекта</option>
+                <option value="management">Полное управление</option>
               </select>
-              <textarea class="field" placeholder="Кратко опишите проект: тип объекта, площадь, стадия" name="message"></textarea>
+              <textarea class="field" placeholder="Кратко опишите ваш проект (тип, площадь, текущая стадия)" name="message" style="min-height:100px"></textarea>
               <button class="form-submit" type="submit">Получить консультацию</button>
             </form>
-            <p class="form-note">Свяжемся в течение 2 часов в рабочее время.</p>
+            <p class="form-note">Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности. Свяжемся в течение 2 часов.</p>
           </div>
 
         </div>
@@ -1219,8 +1307,8 @@
     <div class="container">
       <div class="footer-top">
         <div>
-          <div class="footer-logo">AX<span>I</span>S</div>
-          <p class="footer-tag">Независимый контроль ремонта и строительства. Работаем в ваших интересах.</p>
+            <div class="footer-logo" style="font-size:28px">AXIS</div>
+            <p class="footer-tag">Независимый контроль и управление ремонтом и строительством. Представляем ваши интересы на каждом этапе.</p>
         </div>
         <div>
           <p class="footer-col-title">Навигация</p>
@@ -1251,16 +1339,6 @@
   <script>
     /* ── Cursor ─────────────────────────────────────── */
     const cursor = document.getElementById('cursor');
-    let mx = -100, my = -100;
-    document.addEventListener('mousemove', e => {
-      mx = e.clientX; my = e.clientY;
-      cursor.style.left = mx + 'px';
-      cursor.style.top  = my + 'px';
-    });
-    document.querySelectorAll('a, button, .service-card, .tariff, .panel').forEach(el => {
-      el.addEventListener('mouseenter', () => cursor.classList.add('grow'));
-      el.addEventListener('mouseleave', () => cursor.classList.remove('grow'));
-    });
 
     /* ── Hero load animation ────────────────────────── */
     window.addEventListener('load', () => {
@@ -1344,10 +1422,6 @@
     }, { threshold: 0.5 });
     document.querySelectorAll('[data-count],[data-count-float]').forEach(el => countObserver.observe(el));
 
-    /* ── Select color fix ───────────────────────────── */
-    document.getElementById('ptype').addEventListener('change', function() {
-      this.classList.add('sel');
-    });
   </script>
 </body>
 </html>
