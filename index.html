@@ -3,91 +3,83 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ANTIGRAVITY — Независимое управление ремонтом и строительством</title>
-  <meta name="description" content="ANTIGRAVITY — независимый контроль ремонта и строительства: управляем процессом, контролируем подрядчиков, сроки, бюджет и качество в интересах заказчика.">
+  <title>Axis — Управление ремонтом и строительством</title>
+  <meta name="description" content="Axis — независимое управление ремонтом и строительством: контролируем подрядчиков, сроки, бюджет и качество в интересах заказчика.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #0E0E0E;
-      --bg-deep: #0A0A0A;
-      --surface: #161616;
-      --surface-2: #1A1A1A;
-      --surface-3: #1C1C1C;
-      --white: #FFFFFF;
-      --gold: #C8A96E;
-      --muted: #6B6B6B;
-      --border: rgba(255, 255, 255, 0.07);
-      --input-border: rgba(255, 255, 255, 0.1);
+      --bg: #ffffff;
+      --bg-2: #f7faff;
+      --surface: #ffffff;
+      --surface-2: #f6f7fb;
+      --text: #0b1220;
+      --muted: #475569;
+      --muted-2: #64748b;
+      --accent: #1d4ed8;
+      --border: rgba(0, 0, 0, 0.10);
+      --border-2: rgba(0, 0, 0, 0.14);
+      --shadow: 0 18px 50px rgba(2, 6, 23, 0.08);
+      --radius: 20px;
+      --radius-sm: 16px;
+      --radius-pill: 999px;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
 
     body {
       background: var(--bg);
-      color: var(--white);
-      font-family: "Inter", sans-serif;
-      font-weight: 300;
+      color: var(--text);
+      font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      font-weight: 400;
       line-height: 1.5;
       overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: geometricPrecision;
     }
 
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
+    a { color: inherit; text-decoration: none; }
+    button, input, textarea { font: inherit; color: inherit; background: transparent; border: none; outline: none; }
 
-    button,
-    input,
-    select,
-    textarea {
-      font: inherit;
-      color: inherit;
-      background: transparent;
-      border: none;
-      outline: none;
-    }
+    .container { width: min(1160px, calc(100% - 48px)); margin: 0 auto; }
+    .section { padding: 96px 0; }
 
-    .container {
-      width: min(1240px, calc(100% - 64px));
-      margin: 0 auto;
-    }
-
-    .section {
-      padding: 132px 0;
+    .eyebrow {
+      font-size: 12px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 700;
     }
 
     .section-title {
-      font-family: "Bebas Neue", sans-serif;
-      font-size: clamp(54px, 8vw, 108px);
-      letter-spacing: 0.08em;
-      line-height: 0.9;
-      color: var(--white);
-      margin-bottom: 56px;
+      margin-top: 12px;
+      font-size: clamp(30px, 4.6vw, 52px);
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      font-weight: 950;
+      color: var(--text);
+    }
+
+    .section-subtitle {
+      margin-top: 12px;
+      max-width: 72ch;
+      color: var(--muted);
+      font-size: 16px;
     }
 
     .reveal {
       opacity: 0;
-      transform: translateY(36px);
-      transition: opacity 0.85s ease, transform 0.85s ease;
+      transform: translateY(16px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
       transition-delay: var(--d, 0ms);
       will-change: opacity, transform;
     }
+    .reveal.is-visible { opacity: 1; transform: translateY(0); }
 
-    .reveal.is-visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
+    /* Nav */
     .top-nav {
       position: fixed;
       top: 0;
@@ -95,810 +87,436 @@
       width: 100%;
       z-index: 1000;
       border-bottom: 1px solid transparent;
-      transition: background-color 0.35s ease, border-color 0.35s ease;
+      transition: background-color 0.2s ease, border-color 0.2s ease, backdrop-filter 0.2s ease;
     }
-
     .top-nav.scrolled {
-      background: var(--bg);
-      border-bottom-color: var(--gold);
+      background: rgba(255, 255, 255, 0.86);
+      backdrop-filter: blur(14px);
+      border-bottom-color: var(--border);
     }
-
     .top-nav-inner {
-      min-height: 88px;
+      min-height: 78px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 28px;
+      gap: 24px;
     }
 
     .logo {
-      font-family: "Bebas Neue", sans-serif;
-      font-size: 40px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 950;
       letter-spacing: 0.18em;
-      color: var(--white);
-      white-space: nowrap;
-      line-height: 1;
+      font-size: 14px;
+    }
+    .logo-mark {
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #e8eef5, #ffffff);
+      border: 1px solid var(--border);
+      box-shadow: 0 10px 26px rgba(2, 6, 23, 0.06);
+      flex: 0 0 auto;
     }
 
     .nav-links {
       list-style: none;
       display: flex;
       align-items: center;
-      gap: 34px;
+      gap: 22px;
     }
-
     .nav-links a {
       font-size: 13px;
       color: var(--muted);
-      transition: color 0.25s ease;
-      letter-spacing: 0.02em;
+      transition: color 0.2s ease;
+      font-weight: 600;
     }
+    .nav-links a:hover { color: var(--text); }
 
-    .nav-links a:hover {
-      color: var(--white);
-    }
-
-    .btn-nav {
-      border: 1px solid var(--gold);
-      color: var(--gold);
-      padding: 11px 20px;
-      font-size: 13px;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      transition: background-color 0.3s ease, color 0.3s ease;
+    .btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
+      gap: 10px;
+      padding: 12px 16px;
+      border-radius: var(--radius-pill);
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 0.01em;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+      cursor: pointer;
+      user-select: none;
     }
+    .btn-primary {
+      background: var(--text);
+      color: #ffffff;
+      box-shadow: 0 18px 44px rgba(2, 6, 23, 0.14);
+    }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 22px 60px rgba(2, 6, 23, 0.18); }
 
-    .btn-nav:hover {
-      background: var(--gold);
-      color: var(--bg);
+    .btn-secondary {
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.72);
+      color: var(--text);
     }
+    .btn-secondary:hover { border-color: var(--border-2); }
 
     .hamburger {
       display: none;
       width: 44px;
       height: 44px;
       border: 1px solid var(--border);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.7);
       position: relative;
       cursor: pointer;
       z-index: 1101;
     }
-
     .hamburger span {
       position: absolute;
       left: 10px;
       right: 10px;
       height: 1px;
-      background: var(--white);
+      background: var(--text);
       transition: top 0.25s ease, transform 0.25s ease, opacity 0.25s ease;
     }
-
     .hamburger span:nth-child(1) { top: 14px; }
     .hamburger span:nth-child(2) { top: 21px; }
     .hamburger span:nth-child(3) { top: 28px; }
-
-    .top-nav.menu-open .hamburger span:nth-child(1) {
-      top: 21px;
-      transform: rotate(45deg);
-    }
-
-    .top-nav.menu-open .hamburger span:nth-child(2) {
-      opacity: 0;
-    }
-
-    .top-nav.menu-open .hamburger span:nth-child(3) {
-      top: 21px;
-      transform: rotate(-45deg);
-    }
+    .top-nav.menu-open .hamburger span:nth-child(1) { top: 21px; transform: rotate(45deg); }
+    .top-nav.menu-open .hamburger span:nth-child(2) { opacity: 0; }
+    .top-nav.menu-open .hamburger span:nth-child(3) { top: 21px; transform: rotate(-45deg); }
 
     .mobile-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(14, 14, 14, 0.98);
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(16px);
       display: grid;
       place-items: center;
       opacity: 0;
       visibility: hidden;
       pointer-events: none;
-      transition: opacity 0.3s ease, visibility 0.3s ease;
+      transition: opacity 0.25s ease, visibility 0.25s ease;
       z-index: 1100;
     }
+    .top-nav.menu-open .mobile-overlay { opacity: 1; visibility: visible; pointer-events: auto; }
+    .mobile-menu { list-style: none; text-align: center; display: grid; gap: 18px; }
+    .mobile-menu a { font-size: clamp(26px, 7vw, 40px); letter-spacing: -0.02em; color: var(--text); font-weight: 950; }
 
-    .top-nav.menu-open .mobile-overlay {
-      opacity: 1;
-      visibility: visible;
-      pointer-events: auto;
-    }
-
-    .mobile-menu {
-      list-style: none;
-      text-align: center;
-      display: grid;
-      gap: 20px;
-    }
-
-    .mobile-menu a {
-      font-family: "Bebas Neue", sans-serif;
-      font-size: clamp(36px, 8vw, 56px);
-      letter-spacing: 0.08em;
-      color: var(--white);
-    }
-
+    /* Hero */
     .hero {
-      padding-top: 186px;
+      padding-top: 120px;
       min-height: 100svh;
-      display: flex;
-      align-items: flex-start;
+      background:
+        radial-gradient(900px 320px at 20% 14%, rgba(29, 78, 216, 0.12), transparent 58%),
+        radial-gradient(900px 360px at 86% 44%, rgba(16, 185, 129, 0.09), transparent 55%),
+        linear-gradient(180deg, var(--bg-2), var(--bg));
+      position: relative;
+      overflow: hidden;
     }
 
-    .hero-overline {
-      font-family: "Bebas Neue", sans-serif;
-      font-size: 13px;
-      letter-spacing: 0.25em;
-      color: var(--gold);
-      margin-bottom: 18px;
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: -14% -14% -20% -14%;
+      background-image: url("assets/axis-reference.png");
+      background-size: cover;
+      background-position: center;
+      opacity: 0.14;
+      filter: grayscale(1) blur(1px);
+      transform: scale(1.03);
+      pointer-events: none;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(800px 260px at 20% 22%, rgba(29, 78, 216, 0.14), transparent 60%),
+        radial-gradient(860px 320px at 92% 40%, rgba(16, 185, 129, 0.10), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,0.00), rgba(255,255,255,0.55));
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      padding: 46px 0 52px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 22px;
+      align-items: start;
     }
 
     .hero-title {
-      font-family: "Bebas Neue", sans-serif;
-      font-size: clamp(68px, 14vw, 150px);
-      line-height: 0.9;
-      letter-spacing: 0.05em;
-      color: var(--white);
+      margin-top: 14px;
+      font-size: clamp(42px, 6.2vw, 72px);
+      line-height: 1.02;
+      letter-spacing: -0.04em;
+      font-weight: 950;
     }
 
     .hero-subtext {
-      margin-top: 28px;
-      max-width: 520px;
+      margin-top: 18px;
+      max-width: 62ch;
       color: var(--muted);
       font-size: 17px;
     }
 
     .hero-actions {
-      margin-top: 40px;
+      margin-top: 22px;
       display: flex;
-      align-items: center;
-      gap: 24px;
+      gap: 12px;
       flex-wrap: wrap;
     }
 
-    .btn-primary {
-      background: var(--gold);
-      color: var(--bg);
-      font-family: "Bebas Neue", sans-serif;
-      font-size: 18px;
-      letter-spacing: 0.06em;
-      padding: 13px 24px;
-      transition: opacity 0.25s ease;
+    .hero-pills {
+      margin-top: 22px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
     }
 
-    .btn-primary:hover {
-      opacity: 0.86;
-    }
-
-    .hero-ghost {
-      color: var(--white);
-      font-size: 14px;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
+    .pill {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      transition: color 0.25s ease;
-    }
-
-    .hero-ghost .arrow {
-      transform: translateX(0);
-      transition: transform 0.25s ease;
-      color: var(--gold);
-    }
-
-    .hero-ghost:hover {
-      color: var(--gold);
-    }
-
-    .hero-ghost:hover .arrow {
-      transform: translateX(5px);
-    }
-
-    .stats {
-      margin-top: 88px;
-      border-top: 1px solid var(--gold);
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-    }
-
-    .stat-item {
-      padding: 24px 8px 0 0;
-      border-right: 1px solid var(--border);
-    }
-
-    .stat-item:last-child {
-      border-right: none;
-    }
-
-    .stat-number {
-      font-family: "Bebas Neue", sans-serif;
-      font-size: clamp(46px, 6vw, 58px);
-      line-height: 1;
-      color: var(--gold);
-      letter-spacing: 0.04em;
-    }
-
-    .stat-label {
-      margin-top: 10px;
-      color: var(--muted);
-      font-size: 12px;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      max-width: 20ch;
-    }
-
-    .about-grid {
-      display: grid;
-      grid-template-columns: 1.08fr 1fr;
-      gap: 56px;
-      align-items: start;
-    }
-
-    .about-statement {
-      font-family: "Bebas Neue", sans-serif;
-      font-size: clamp(50px, 7.2vw, 72px);
-      line-height: 0.9;
-      letter-spacing: 0.05em;
-      color: var(--white);
-    }
-
-    .about-text {
-      color: var(--muted);
-      font-size: 16px;
-      max-width: 50ch;
-    }
-
-    .about-list {
-      margin-top: 34px;
-      list-style: none;
-      display: grid;
-      gap: 12px;
-    }
-
-    .about-list li {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      color: var(--muted);
-      font-size: 15px;
-      padding-top: 10px;
-      border-top: 1px solid var(--border);
-    }
-
-    .about-list li::before {
-      content: "—";
-      color: var(--gold);
-      font-weight: 500;
-    }
-
-    .process-steps {
-      margin-top: 30px;
-      display: grid;
-      gap: 18px;
-    }
-
-    .process-step {
-      background: var(--surface);
+      padding: 10px 12px;
+      border-radius: var(--radius-pill);
       border: 1px solid var(--border);
-      padding: 28px 26px;
-      display: grid;
-      grid-template-columns: auto 1fr;
-      gap: 18px;
-      align-items: start;
-    }
-
-    .step-number {
-      font-family: "Bebas Neue", sans-serif;
-      font-size: 58px;
-      color: var(--gold);
-      line-height: 0.95;
-      letter-spacing: 0.06em;
-      min-width: 56px;
-    }
-
-    .step-title {
-      font-family: "Bebas Neue", sans-serif;
-      font-size: 34px;
-      line-height: 0.9;
-      letter-spacing: 0.05em;
-      color: var(--white);
-    }
-
-    .step-text {
-      margin-top: 10px;
+      background: rgba(255, 255, 255, 0.72);
       color: var(--muted);
-      font-size: 15px;
-      max-width: 68ch;
-    }
-
-    .services-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 22px;
-    }
-
-    .service-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-top: 1px solid var(--gold);
-      padding: 30px 26px;
-      display: flex;
-      flex-direction: column;
-      min-height: 500px;
-      transition: border-color 0.3s ease;
-    }
-
-    .service-card:hover {
-      border-color: var(--gold);
-    }
-
-    .service-card.highlight {
-      border-color: var(--gold);
-    }
-
-    .badge {
-      display: inline-flex;
-      align-self: flex-start;
-      border: 1px solid var(--gold);
-      color: var(--gold);
-      font-size: 10px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      padding: 4px 8px;
-      margin-bottom: 16px;
-    }
-
-    .service-name {
-      font-family: "Bebas Neue", sans-serif;
-      font-size: 40px;
-      line-height: 0.92;
-      letter-spacing: 0.05em;
-      color: var(--white);
-    }
-
-    .service-tariff {
-      margin-top: 10px;
-      color: var(--gold);
       font-size: 13px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
+      font-weight: 650;
     }
 
-    .service-desc {
-      margin-top: 16px;
-      color: var(--muted);
-      font-size: 14px;
+    .card {
+      background: rgba(255, 255, 255, 0.78);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
     }
+    .card-body { padding: 18px; }
 
-    .service-list {
-      margin-top: 18px;
-      list-style: none;
-      display: grid;
+    .mini-form-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       gap: 10px;
-      color: var(--muted);
-      font-size: 14px;
     }
 
-    .service-list li::before {
-      content: "— ";
-      color: var(--gold);
-    }
-
-    .service-link {
-      margin-top: auto;
-      padding-top: 22px;
-      color: var(--gold);
-      font-size: 14px;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      transition: color 0.25s ease;
-    }
-
-    .service-link:hover {
-      color: var(--white);
-    }
-
-    .why {
-      background: var(--surface);
-    }
-
-    .why-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 22px;
-    }
-
-    .why-card {
-      border: 1px solid var(--border);
-      background: var(--surface-3);
-      padding: 28px 24px;
-    }
-
-    .why-icon {
-      width: 28px;
-      height: 28px;
-      color: var(--gold);
-      margin-bottom: 16px;
-    }
-
-    .why-icon svg {
-      width: 100%;
-      height: 100%;
-      stroke: currentColor;
-      fill: none;
-      stroke-width: 1.4;
-    }
-
-    .why-title {
-      font-family: "Bebas Neue", sans-serif;
-      font-size: 31px;
-      letter-spacing: 0.05em;
-      line-height: 0.92;
-      color: var(--white);
-      margin-bottom: 10px;
-    }
-
-    .why-text {
-      color: var(--muted);
-      font-size: 14px;
-      max-width: 40ch;
-    }
-
-    .testimonials-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 22px;
-    }
-
-    .testimonial-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-left: 2px solid var(--gold);
-      padding: 30px 24px;
-      min-height: 330px;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .testimonial-name {
-      font-family: "Bebas Neue", sans-serif;
-      color: var(--white);
-      font-size: 27px;
-      letter-spacing: 0.05em;
-      line-height: 0.9;
-    }
-
-    .testimonial-project {
-      margin-top: 8px;
-      color: var(--gold);
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-    }
-
-    .stars {
-      margin-top: 12px;
-      color: var(--gold);
-      letter-spacing: 0.16em;
-      font-size: 13px;
-    }
-
-    .testimonial-quote {
-      margin-top: 14px;
-      color: var(--muted);
-      font-size: 15px;
-      font-style: italic;
-    }
-
-    .cta {
-      background: var(--surface-2);
-      border-top: 1px solid var(--gold);
-    }
-
-    .cta-grid {
-      display: grid;
-      grid-template-columns: 1.1fr 1fr;
-      gap: 54px;
-      align-items: start;
-    }
-
-    .cta-title {
-      font-family: "Bebas Neue", sans-serif;
-      font-size: clamp(56px, 8vw, 100px);
-      line-height: 0.9;
-      letter-spacing: 0.06em;
-      color: var(--white);
-    }
-
-    .cta-subtitle {
-      margin-top: 22px;
-      color: var(--muted);
-      font-size: 16px;
-    }
+    .mini-form-title { font-weight: 900; letter-spacing: -0.02em; font-size: 16px; }
+    .mini-form-note { color: var(--muted-2); font-size: 12px; font-weight: 600; }
 
     .form {
+      margin-top: 14px;
       display: grid;
-      gap: 14px;
+      gap: 10px;
     }
 
     .field {
       width: 100%;
-      background: var(--bg);
-      border: 1px solid var(--input-border);
-      color: var(--white);
-      font-size: 15px;
-      padding: 14px 16px;
-      transition: border-color 0.25s ease;
-      border-radius: 0;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.88);
+      padding: 12px 12px;
+      font-size: 14px;
+      transition: border-color 0.18s ease, box-shadow 0.18s ease;
     }
-
     .field:focus {
-      border-color: var(--gold);
+      border-color: rgba(29, 78, 216, 0.55);
+      box-shadow: 0 0 0 4px rgba(29, 78, 216, 0.12);
     }
+    .field::placeholder { color: var(--muted-2); }
+    textarea.field { resize: vertical; min-height: 96px; }
 
-    .field::placeholder {
-      color: var(--muted);
-    }
-
-    select.field {
-      appearance: none;
-      color: var(--muted);
-      background-image:
-        linear-gradient(45deg, transparent 50%, var(--muted) 50%),
-        linear-gradient(135deg, var(--muted) 50%, transparent 50%);
-      background-position:
-        calc(100% - 18px) calc(50% - 2px),
-        calc(100% - 12px) calc(50% - 2px);
-      background-size: 6px 6px, 6px 6px;
-      background-repeat: no-repeat;
-      padding-right: 34px;
-    }
-
-    select.field.selected {
-      color: var(--white);
-    }
-
-    textarea.field {
-      resize: vertical;
-      min-height: 110px;
-    }
-
-    .form-submit {
-      width: 100%;
-      background: var(--gold);
-      color: var(--bg);
-      font-family: "Bebas Neue", sans-serif;
-      font-size: 20px;
-      letter-spacing: 0.07em;
-      padding: 14px 20px;
-      transition: opacity 0.25s ease;
-      cursor: pointer;
-    }
-
-    .form-submit:hover {
-      opacity: 0.9;
-    }
-
-    .direct-label {
-      margin-top: 10px;
-      color: var(--muted);
-      font-size: 12px;
-      letter-spacing: 0.04em;
-    }
-
-    .direct-links {
-      margin-top: 10px;
-      display: flex;
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       gap: 10px;
     }
 
-    .direct-link {
-      width: 36px;
-      height: 36px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border: 1px solid var(--gold);
-      color: var(--gold);
-      transition: color 0.25s ease, background-color 0.25s ease;
-    }
+    .form-footer { margin-top: 10px; display: grid; gap: 8px; }
+    .form-help { color: var(--muted-2); font-size: 12px; font-weight: 600; }
 
-    .direct-link:hover {
-      background: var(--gold);
-      color: var(--bg);
+    .form-status {
+      display: none;
+      padding: 12px 12px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.92);
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 650;
     }
+    .form-status.is-visible { display: block; }
+    .form-status.is-error { border-color: rgba(239, 68, 68, 0.30); background: rgba(254, 242, 242, 0.92); }
+    .form-status.is-success { border-color: rgba(16, 185, 129, 0.30); background: rgba(236, 253, 245, 0.92); }
 
-    .direct-link svg {
-      width: 17px;
-      height: 17px;
-      fill: currentColor;
+    /* Grids */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 20px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-top: 22px; }
+
+    .soft-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      padding: 18px;
     }
+    .soft-card h3 { font-size: 16px; letter-spacing: -0.02em; font-weight: 900; }
+    .soft-card p { margin-top: 8px; color: var(--muted); font-size: 14px; max-width: 60ch; }
 
-    footer {
-      background: var(--bg-deep);
-      border-top: 1px solid var(--gold);
-      padding: 46px 0 22px;
+    .icon {
+      width: 28px;
+      height: 28px;
+      color: var(--accent);
+      margin-bottom: 12px;
     }
+    .icon svg { width: 100%; height: 100%; stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
 
-    .footer-grid {
-      display: grid;
-      grid-template-columns: 1.2fr 1fr auto;
-      gap: 40px;
-      align-items: start;
-    }
+    .split { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 20px; }
 
-    .footer-tagline {
-      margin-top: 10px;
-      color: var(--muted);
-      font-size: 12px;
-      max-width: 44ch;
-    }
-
-    .footer-links {
+    .list {
       list-style: none;
       display: grid;
       gap: 10px;
-      align-content: start;
-    }
-
-    .footer-links a {
+      margin-top: 12px;
       color: var(--muted);
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .list li { display: flex; gap: 10px; align-items: flex-start; }
+    .list .dot {
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      margin-top: 1px;
+      background: rgba(255,255,255,0.7);
       font-size: 12px;
-      transition: color 0.25s ease;
+      font-weight: 900;
+      color: var(--text);
+    }
+    .list .dot.bad { color: rgba(239, 68, 68, 0.95); }
+    .list .dot.good { color: rgba(16, 185, 129, 0.95); }
+
+    /* Process */
+    .steps { margin-top: 20px; display: grid; gap: 12px; }
+    .step {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 14px;
+      align-items: start;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: rgba(255,255,255,0.78);
+      padding: 16px;
+    }
+    .step-num {
+      width: 40px;
+      height: 40px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.92);
+      display: grid;
+      place-items: center;
+      font-weight: 950;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+    .step h3 { font-size: 16px; font-weight: 900; letter-spacing: -0.02em; }
+    .step p { margin-top: 6px; color: var(--muted); font-size: 14px; }
+
+    /* CTA */
+    .cta {
+      background: linear-gradient(180deg, var(--surface-2), var(--bg));
+      border-top: 1px solid var(--border);
+    }
+    .cta-grid {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 18px;
+      align-items: start;
+      margin-top: 20px;
     }
 
-    .footer-links a:hover {
-      color: var(--white);
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 36px 0 22px;
+      background: var(--bg);
     }
-
-    .footer-social {
-      display: flex;
-      gap: 10px;
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 22px;
+      align-items: start;
     }
-
-    .footer-social .direct-link {
-      width: 34px;
-      height: 34px;
-    }
-
+    .footer-links { list-style: none; display: grid; gap: 10px; align-content: start; }
+    .footer-links a { color: var(--muted); font-size: 13px; font-weight: 650; }
+    .footer-links a:hover { color: var(--text); }
+    .footer-note { margin-top: 10px; color: var(--muted); font-size: 12px; max-width: 60ch; }
     .footer-bottom {
-      margin-top: 26px;
-      padding-top: 16px;
+      margin-top: 18px;
+      padding-top: 14px;
       border-top: 1px solid var(--border);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 14px;
       flex-wrap: wrap;
+      gap: 10px;
       color: var(--muted);
-      font-size: 11px;
+      font-size: 12px;
+      font-weight: 600;
     }
 
-    .footer-policy {
-      color: var(--muted);
-      transition: color 0.25s ease;
+    @media (max-width: 980px) {
+      .hero-grid { grid-template-columns: 1fr; }
+      .cta-grid { grid-template-columns: 1fr; }
+      .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .split { grid-template-columns: 1fr; }
+      .nav-links, .btn-nav { display: none; }
+      .hamburger { display: inline-block; }
+      .top-nav-inner { min-height: 72px; }
     }
 
-    .footer-policy:hover {
-      color: var(--white);
-    }
-
-    @media (max-width: 1120px) {
-      .about-grid,
-      .cta-grid,
-      .footer-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .services-grid,
-      .testimonials-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-    }
-
-    @media (max-width: 880px) {
-      .container {
-        width: min(1240px, calc(100% - 40px));
-      }
-
-      .section {
-        padding: 120px 0;
-      }
-
-      .top-nav-inner {
-        min-height: 74px;
-      }
-
-      .nav-links,
-      .btn-nav {
-        display: none;
-      }
-
-      .hamburger {
-        display: inline-block;
-      }
-
-      .hero {
-        padding-top: 150px;
-      }
-
-      .stats {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .stat-item:nth-child(2) {
-        border-right: none;
-      }
-
-      .why-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (max-width: 680px) {
-      .section-title {
-        margin-bottom: 44px;
-      }
-
-      .hero-actions {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .btn-primary {
-        width: 100%;
-        text-align: center;
-      }
-
-      .services-grid,
-      .testimonials-grid,
-      .stats {
-        grid-template-columns: 1fr;
-      }
-
-      .stat-item {
-        border-right: none;
-        border-bottom: 1px solid var(--border);
-        padding-bottom: 18px;
-      }
-
-      .stat-item:last-child {
-        border-bottom: none;
-      }
-
-      .process-step {
-        grid-template-columns: 1fr;
-        gap: 10px;
-      }
-
-      .step-number {
-        min-width: auto;
-      }
+    @media (max-width: 640px) {
+      .container { width: min(1160px, calc(100% - 32px)); }
+      .section { padding: 76px 0; }
+      .hero { padding-top: 104px; }
+      .grid-4 { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+      .hero-actions { flex-direction: column; align-items: stretch; }
+      .btn { width: 100%; }
+      .step { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
   <header class="top-nav" id="topNav">
     <div class="container top-nav-inner">
-      <a class="logo nav-link" href="#hero">ANTIGRAVITY</a>
+      <a class="logo nav-link" href="#hero" aria-label="Axis">
+        <span class="logo-mark" aria-hidden="true"></span>
+        AXIS
+      </a>
 
-      <ul class="nav-links">
+      <ul class="nav-links" aria-label="Навигация">
         <li><a class="nav-link" href="#services">Услуги</a></li>
         <li><a class="nav-link" href="#process">Как работаем</a></li>
-        <li><a class="nav-link" href="#tariffs">Тарифы</a></li>
+        <li><a class="nav-link" href="#cases">Кейсы</a></li>
         <li><a class="nav-link" href="#contacts">Контакты</a></li>
       </ul>
 
-      <a class="btn-nav nav-link" href="#contacts">Оставить заявку</a>
+      <a class="btn btn-secondary btn-nav nav-link" href="#contacts">Получить консультацию</a>
 
       <button class="hamburger" id="hamburger" aria-label="Открыть меню" aria-expanded="false">
         <span></span><span></span><span></span>
@@ -906,312 +524,281 @@
     </div>
 
     <div class="mobile-overlay" id="mobileOverlay">
-      <ul class="mobile-menu">
+      <ul class="mobile-menu" aria-label="Мобильное меню">
         <li><a class="nav-link" href="#services">Услуги</a></li>
         <li><a class="nav-link" href="#process">Как работаем</a></li>
-        <li><a class="nav-link" href="#tariffs">Тарифы</a></li>
+        <li><a class="nav-link" href="#cases">Кейсы</a></li>
         <li><a class="nav-link" href="#contacts">Контакты</a></li>
       </ul>
     </div>
   </header>
 
   <main>
-    <section class="hero section" id="hero">
-      <div class="container">
-        <p class="hero-overline reveal">НЕЗАВИСИМЫЙ КОНТРОЛЬ РЕМОНТА И СТРОИТЕЛЬСТВА</p>
-        <h1 class="hero-title reveal">ВАШИ ДЕНЬГИ.<br>ВАШИ СРОКИ.<br>НАШ КОНТРОЛЬ.</h1>
-        <p class="hero-subtext reveal">
-          Мы управляем ремонтом и строительством в ваших интересах.
-          Контролируем подрядчиков, бюджет и качество — пока вы занимаетесь своими делами.
-        </p>
-        <div class="hero-actions reveal">
-          <a class="btn-primary nav-link" href="#contacts">Оставить заявку</a>
-          <a class="hero-ghost nav-link" href="#process">Как это работает <span class="arrow">→</span></a>
-        </div>
+    <section class="hero" id="hero">
+      <div class="container hero-inner">
+        <div class="hero-grid">
+          <div>
+            <p class="eyebrow reveal">Независимое управление ремонтом и строительством</p>
+            <h1 class="hero-title reveal">Защитим бюджет, качество и сроки строительства</h1>
+            <p class="hero-subtext reveal">
+              Работаем в ваших интересах: контролируем подрядчиков, смету и качество работ.
+              Вы получаете прозрачный процесс и регулярные отчёты — без стресса и хаоса.
+            </p>
 
-        <div class="stats">
-          <article class="stat-item reveal">
-            <p class="stat-number">87+</p>
-            <p class="stat-label">объектов под управлением</p>
-          </article>
-          <article class="stat-item reveal">
-            <p class="stat-number">4.9</p>
-            <p class="stat-label">средний рейтинг клиентов</p>
-          </article>
-          <article class="stat-item reveal">
-            <p class="stat-number">0</p>
-            <p class="stat-label">просроченных сдач</p>
-          </article>
-          <article class="stat-item reveal">
-            <p class="stat-number">от 3%</p>
-            <p class="stat-label">от бюджета объекта</p>
-          </article>
+            <div class="hero-actions reveal">
+              <a class="btn btn-primary nav-link" href="#contacts">Получить консультацию</a>
+              <a class="btn btn-secondary nav-link" href="#services">Заказать аудит стройки</a>
+            </div>
+
+            <div class="hero-pills reveal" aria-label="Коротко о подходе">
+              <div class="pill">Контроль сроков</div>
+              <div class="pill">Прозрачный бюджет</div>
+              <div class="pill">Фото/видео отчёты</div>
+            </div>
+          </div>
+
+          <div class="card reveal" aria-label="Форма на первом экране">
+            <div class="card-body">
+              <div class="mini-form-head">
+                <div class="mini-form-title">Бесплатная консультация</div>
+                <div class="mini-form-note">Ответим в течение 2 часов</div>
+              </div>
+              <form class="form js-lead-form" action="#" method="post" novalidate>
+                <div class="form-row">
+                  <input class="field" type="text" name="name" placeholder="Имя" autocomplete="name">
+                  <input class="field" type="tel" name="phone" placeholder="+7 (___) ___-__-__" autocomplete="tel" required>
+                </div>
+                <textarea class="field" name="project" placeholder="Кратко о проекте: ремонт/строительство, площадь (м²)"></textarea>
+                <div class="form-footer">
+                  <button class="btn btn-primary" type="submit">Получить консультацию</button>
+                  <div class="form-help">Без спама. Только по вашему запросу.</div>
+                  <div class="form-status" role="status" aria-live="polite"></div>
+                </div>
+              </form>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
-    <section class="section" id="what-we-do">
+    <section class="section" id="problem">
       <div class="container">
-        <h2 class="section-title reveal">ЧТО МЫ ДЕЛАЕМ</h2>
-        <div class="about-grid">
-          <div class="reveal">
-            <p class="about-statement">МЫ НЕ СТРОИМ.<br>МЫ УПРАВЛЯЕМ.<br>ЭТО РАЗНЫЕ ВЕЩИ.</p>
-          </div>
-          <div class="reveal">
-            <p class="about-text">
-              ANTIGRAVITY представляет интересы заказчика, а не подрядчика.
-              Мы не выполняем строительные работы и не аффилированы с бригадами, поэтому
-              сохраняем независимый контроль на каждом этапе. Наша задача — управлять процессом,
-              контролировать подрядчиков, сроки, бюджет и качество, чтобы вы получали результат без хаоса.
-            </p>
-            <ul class="about-list">
-              <li>Контроль качества на каждом этапе</li>
-              <li>Управление бюджетом и сметой</li>
-              <li>Контроль сроков и календарного плана</li>
-              <li>Взаимодействие с подрядчиками от вашего имени</li>
-              <li>Фото и видеоотчёты по объекту</li>
+        <p class="eyebrow reveal">Проблема → решение</p>
+        <h2 class="section-title reveal">Ремонт идёт — а контроля нет?</h2>
+        <p class="section-subtitle reveal">
+          Подрядчики могут срывать сроки, увеличивать смету, а качество работ становится «как получится».
+          Axis берёт контроль на себя и ведёт проект по понятным правилам.
+        </p>
+
+        <div class="split">
+          <div class="soft-card reveal">
+            <h3>Что обычно происходит</h3>
+            <ul class="list">
+              <li><span class="dot bad">✕</span><span>Срывы сроков и увеличение бюджета</span></li>
+              <li><span class="dot bad">✕</span><span>Некачественные работы и переделки</span></li>
+              <li><span class="dot bad">✕</span><span>Нет времени разбираться в стройке</span></li>
             </ul>
           </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="process">
-      <div class="container">
-        <h2 class="section-title reveal">ПРОЦЕСС</h2>
-        <div class="process-steps">
-          <article class="process-step reveal">
-            <div class="step-number">01</div>
-            <div>
-              <h3 class="step-title">Анализ объекта</h3>
-              <p class="step-text">
-                Изучаем вашу ситуацию: объект, смету, подрядчиков.
-                Если сметы нет — помогаем составить структуру бюджета и контрольные параметры.
-              </p>
-            </div>
-          </article>
-
-          <article class="process-step reveal">
-            <div class="step-number">02</div>
-            <div>
-              <h3 class="step-title">Формирование плана</h3>
-              <p class="step-text">
-                Составляем календарный план, определяем контрольные точки, зоны риска и формат регулярной отчётности.
-              </p>
-            </div>
-          </article>
-
-          <article class="process-step reveal">
-            <div class="step-number">03</div>
-            <div>
-              <h3 class="step-title">Подбор или проверка подрядчиков</h3>
-              <p class="step-text">
-                Подбираем исполнителей из проверенной базы или проверяем ваших подрядчиков перед стартом работ.
-              </p>
-            </div>
-          </article>
-
-          <article class="process-step reveal">
-            <div class="step-number">04</div>
-            <div>
-              <h3 class="step-title">Контроль в процессе</h3>
-              <p class="step-text">
-                Выезды на объект, фото и видеоотчёты, еженедельные сводки.
-                Вы видите ход работ в реальном времени, даже находясь в другом городе.
-              </p>
-            </div>
-          </article>
-
-          <article class="process-step reveal">
-            <div class="step-number">05</div>
-            <div>
-              <h3 class="step-title">Приёмка и закрытие</h3>
-              <p class="step-text">
-                Ваш представитель на объекте при финальной сдаче:
-                фиксируем недостатки и добиваемся их устранения подрядчиками.
-              </p>
-            </div>
-          </article>
+          <div class="soft-card reveal">
+            <h3>Как мы решаем</h3>
+            <ul class="list">
+              <li><span class="dot good">✓</span><span>Контролируем сроки и финансы</span></li>
+              <li><span class="dot good">✓</span><span>Гарантируем качество работ по этапам</span></li>
+              <li><span class="dot good">✓</span><span>Снимаем стресс со стройки — всё ведём сами</span></li>
+            </ul>
+          </div>
         </div>
       </div>
     </section>
 
     <section class="section" id="services">
       <div class="container">
-        <h2 class="section-title reveal">УСЛУГИ</h2>
-        <div class="services-grid" id="tariffs">
-          <article class="service-card reveal">
-            <span class="badge">Базовый</span>
-            <h3 class="service-name">Технический надзор</h3>
-            <p class="service-tariff">Тариф: фиксированная стоимость</p>
-            <p class="service-desc">
-              Для клиентов, которым нужен независимый контроль отдельных этапов и технический надзор.
-            </p>
-            <ul class="service-list">
-              <li>Выезды на объект</li>
-              <li>Фотоотчёты</li>
-              <li>Контроль качества этапов</li>
-              <li>Рекомендации по корректировке работ</li>
-            </ul>
-            <a class="service-link nav-link" href="#contacts">Подробнее →</a>
-          </article>
+        <p class="eyebrow reveal">Чем занимаемся</p>
+        <h2 class="section-title reveal">Управление стройкой — от начала до результата</h2>
+        <p class="section-subtitle reveal">
+          Мы не выполняем строительные работы — мы управляем процессом и защищаем интересы заказчика.
+        </p>
 
-          <article class="service-card highlight reveal">
-            <span class="badge">Популярный</span>
-            <h3 class="service-name">Полное управление</h3>
-            <p class="service-tariff">Тариф: процент от бюджета ремонта</p>
-            <p class="service-desc">
-              Полное сопровождение от А до Я: управляем процессом, контролируем подрядчиков и представляем ваши интересы.
-            </p>
-            <ul class="service-list">
-              <li>Календарный план</li>
-              <li>Контроль бюджета</li>
-              <li>Управление подрядчиками</li>
-              <li>Регулярная отчётность</li>
-              <li>Участие в ключевых этапах</li>
-            </ul>
-            <a class="service-link nav-link" href="#contacts">Подробнее →</a>
+        <div class="grid-4">
+          <article class="soft-card reveal">
+            <div class="icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h10M4 17h16"></path></svg>
+            </div>
+            <h3>Управление проектом</h3>
+            <p>Календарный план, контрольные точки, координация участников и материалов.</p>
           </article>
-
-          <article class="service-card reveal">
-            <span class="badge">Срочно</span>
-            <h3 class="service-name">Антикризис</h3>
-            <p class="service-tariff">Тариф: повышенный тариф</p>
-            <p class="service-desc">
-              Для проблемных объектов, где уже есть срывы сроков, перерасход бюджета или конфликт с подрядчиками.
-            </p>
-            <ul class="service-list">
-              <li>Аудит текущей ситуации</li>
-              <li>Выявление ошибок</li>
-              <li>Восстановление контроля</li>
-              <li>Переговоры с подрядчиками</li>
-              <li>Выстраивание нового плана</li>
-            </ul>
-            <a class="service-link nav-link" href="#contacts">Подробнее →</a>
+          <article class="soft-card reveal">
+            <div class="icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M8 12l2.5 2.5L16 9"></path><path d="M20 12a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z"></path></svg>
+            </div>
+            <h3>Контроль подрядчиков</h3>
+            <p>Проверяем качество работ, фиксируем отклонения и добиваемся исправлений.</p>
+          </article>
+          <article class="soft-card reveal">
+            <div class="icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M12 6v12"></path><path d="M7 9h10"></path><path d="M7 15h10"></path></svg>
+            </div>
+            <h3>Оптимизация бюджета</h3>
+            <p>Смета без сюрпризов: контроль расходов, согласование изменений, защита от переплат.</p>
+          </article>
+          <article class="soft-card reveal">
+            <div class="icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M8 7h10"></path><path d="M8 12h10"></path><path d="M8 17h10"></path><path d="M6 7h.01M6 12h.01M6 17h.01"></path></svg>
+            </div>
+            <h3>Отчёты и фотофиксация</h3>
+            <p>Регулярные сводки, фото/видео, риски и план на неделю — всё в одном месте.</p>
           </article>
         </div>
       </div>
     </section>
 
-    <section class="section why" id="why-us">
+    <section class="section" id="why">
       <div class="container">
-        <h2 class="section-title reveal">ПОЧЕМУ МЫ</h2>
-        <div class="why-grid">
-          <article class="why-card reveal">
-            <div class="why-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16"></rect></svg>
-            </div>
-            <h3 class="why-title">Независимая позиция</h3>
-            <p class="why-text">
-              Мы не связаны с подрядчиками. Наш интерес — ваш результат и прозрачный контроль, а не их прибыль.
-            </p>
-          </article>
+        <p class="eyebrow reveal">Почему выбирают Axis</p>
+        <h2 class="section-title reveal">Профессиональный контроль вместо «как получится»</h2>
+        <p class="section-subtitle reveal">
+          Мы работаем как представитель заказчика: прозрачность, дисциплина процесса и результат.
+        </p>
 
-          <article class="why-card reveal">
-            <div class="why-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M4 12h16M12 4v16"></path></svg>
+        <div class="grid-2">
+          <article class="soft-card reveal">
+            <div class="icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M12 3l9 6-9 6-9-6 9-6Z"></path><path d="M3 9v6l9 6 9-6V9"></path></svg>
             </div>
-            <h3 class="why-title">Фиксированная стоимость</h3>
-            <p class="why-text">
-              Никаких скрытых платежей. Вы платите процент или фикс — условия прозрачны и закреплены договором.
-            </p>
+            <h3>Опыт с требовательными объектами</h3>
+            <p>Знаем, где «съедаются» сроки и бюджет, и закрываем риски заранее.</p>
           </article>
-
-          <article class="why-card reveal">
-            <div class="why-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"></circle></svg>
+          <article class="soft-card reveal">
+            <div class="icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M12 8v4l2 2"></path><path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"></path></svg>
             </div>
-            <h3 class="why-title">Удалённый формат</h3>
-            <p class="why-text">
-              Фото, видео, стримы с объекта и сводки позволяют контролировать проект, не выходя из офиса.
-            </p>
+            <h3>Сроки и бюджет под контролем</h3>
+            <p>Фиксируем правила работы, контролируем смету и изменения по проекту.</p>
           </article>
-
-          <article class="why-card reveal">
-            <div class="why-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M4 18h16M7 6h10M7 10h10M7 14h10"></path></svg>
+          <article class="soft-card reveal">
+            <div class="icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M4 20V6"></path><path d="M20 20V6"></path><path d="M4 10h16"></path><path d="M7 6V4h10v2"></path></svg>
             </div>
-            <h3 class="why-title">Работаем по договору</h3>
-            <p class="why-text">
-              Полная юридическая ответственность: договор, акты и отчётность на каждом этапе проекта.
-            </p>
+            <h3>Проверенные подрядчики или аудит ваших</h3>
+            <p>Можем подключиться к текущей бригаде и навести порядок на объекте.</p>
+          </article>
+          <article class="soft-card reveal">
+            <div class="icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M4 7h16"></path><path d="M7 7v14"></path><path d="M17 7v14"></path><path d="M4 21h16"></path></svg>
+            </div>
+            <h3>Фото- и видеоотчёты по этапам</h3>
+            <p>Вы видите прогресс и качество работ — даже если находитесь в другом городе.</p>
           </article>
         </div>
       </div>
     </section>
 
-    <section class="section" id="testimonials">
+    <section class="section" id="process">
       <div class="container">
-        <h2 class="section-title reveal">О НАС ГОВОРЯТ</h2>
-        <div class="testimonials-grid">
-          <article class="testimonial-card reveal">
-            <h3 class="testimonial-name">Алексей М., Москва</h3>
-            <p class="testimonial-project">Квартира 180 м², полное управление</p>
-            <p class="stars">★★★★★</p>
-            <p class="testimonial-quote">
-              "Четыре месяца ремонта — я не потерял ни одного рабочего дня.
-              Смотрел отчёты из офиса. Сдали в срок, без единого сюрприза."
-            </p>
-          </article>
+        <p class="eyebrow reveal">Как мы работаем</p>
+        <h2 class="section-title reveal">Понятный процесс из 4 шагов</h2>
+        <p class="section-subtitle reveal">
+          Ваша задача — описать проект. Наша — организовать стройку и довести до результата.
+        </p>
 
-          <article class="testimonial-card reveal">
-            <h3 class="testimonial-name">Марина К., Санкт-Петербург</h3>
-            <p class="testimonial-project">Загородный дом 320 м²</p>
-            <p class="stars">★★★★★</p>
-            <p class="testimonial-quote">
-              "Пробовала управлять сама — потеряла два месяца и много денег.
-              С ANTIGRAVITY сдали раньше плана. Жалею, что не обратилась сразу."
-            </p>
+        <div class="steps">
+          <article class="step reveal">
+            <div class="step-num">1</div>
+            <div>
+              <h3>Оставляете заявку</h3>
+              <p>Заполняете форму на сайте — мы уточняем детали по объекту и задаче.</p>
+            </div>
           </article>
+          <article class="step reveal">
+            <div class="step-num">2</div>
+            <div>
+              <h3>Бесплатная консультация</h3>
+              <p>Разбираем проект, показываем риски и предлагаем стратегию контроля.</p>
+            </div>
+          </article>
+          <article class="step reveal">
+            <div class="step-num">3</div>
+            <div>
+              <h3>Заключение договора</h3>
+              <p>Фиксируем условия, график и бюджет. Определяем формат отчётности.</p>
+            </div>
+          </article>
+          <article class="step reveal">
+            <div class="step-num">4</div>
+            <div>
+              <h3>Начало работы</h3>
+              <p>Контролируем объект, подрядчиков и финансы. Отчёты — регулярно и прозрачно.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
 
-          <article class="testimonial-card reveal">
-            <h3 class="testimonial-name">Дмитрий В.</h3>
-            <p class="testimonial-project">Инвестиционная квартира, Москва (сам в Дубае)</p>
-            <p class="stars">★★★★★</p>
-            <p class="testimonial-quote">
-              "Был за границей весь ремонт. Контролировали всё удалённо.
-              Я только подписывал документы. Результат превзошёл ожидания."
-            </p>
+    <section class="section" id="cases">
+      <div class="container">
+        <p class="eyebrow reveal">Отзывы и кейсы</p>
+        <h2 class="section-title reveal">Как выглядит наша работа</h2>
+        <p class="section-subtitle reveal">
+          Если отзывов пока немного — мы показываем формат: что вы получаете каждую неделю и как фиксируется результат.
+        </p>
+
+        <div class="grid-2">
+          <article class="soft-card reveal">
+            <h3>Еженедельный отчёт</h3>
+            <p>Статус работ, фото, риски и план на следующую неделю. Всё — в одном документе.</p>
+            <ul class="list">
+              <li><span class="dot good">✓</span><span>Что сделано</span></li>
+              <li><span class="dot good">✓</span><span>Что проверено</span></li>
+              <li><span class="dot good">✓</span><span>Что мешает срокам</span></li>
+            </ul>
+          </article>
+          <article class="soft-card reveal">
+            <h3>Контроль качества по этапам</h3>
+            <p>Приёмка этапов, замечания и контроль устранения. Фиксация скрытых работ.</p>
+            <ul class="list">
+              <li><span class="dot good">✓</span><span>Чек-листы</span></li>
+              <li><span class="dot good">✓</span><span>Фотофиксация</span></li>
+              <li><span class="dot good">✓</span><span>Подтверждение исправлений</span></li>
+            </ul>
           </article>
         </div>
       </div>
     </section>
 
     <section class="section cta" id="contacts">
-      <div class="container cta-grid">
-        <div class="reveal">
-          <h2 class="cta-title">ГОТОВЫ ДЕЛЕГИРОВАТЬ?</h2>
-          <p class="cta-subtitle">Оставьте заявку — свяжемся в течение 2 часов</p>
-        </div>
+      <div class="container">
+        <p class="eyebrow reveal">Заявка</p>
+        <h2 class="section-title reveal">Получите консультацию по вашему проекту</h2>
+        <p class="section-subtitle reveal">Опишите объект и задачу — мы предложим план контроля и следующий шаг.</p>
 
-        <div class="reveal">
-          <form class="form" action="#" method="post">
-            <input class="field" type="text" name="name" placeholder="Александр">
-            <input class="field" type="tel" name="phone" placeholder="+7 (___) ___-__-__">
-            <input class="field" type="text" name="area" placeholder="120">
-            <select class="field" id="serviceType" name="service">
-              <option value="" selected disabled>Тип услуги</option>
-              <option value="supervision">Технический надзор</option>
-              <option value="full">Полное управление</option>
-              <option value="crisis">Антикризис</option>
-              <option value="unknown">Пока не знаю</option>
-            </select>
-            <textarea class="field" name="message" rows="3" placeholder="Опишите кратко вашу ситуацию"></textarea>
-            <button class="form-submit" type="submit">Отправить заявку</button>
-          </form>
+        <div class="cta-grid">
+          <div class="soft-card reveal">
+            <h3>Что нужно от вас</h3>
+            <p>Пара строк: ремонт или строительство, площадь, стадия проекта и что беспокоит.</p>
+            <ul class="list">
+              <li><span class="dot good">✓</span><span>Сроки и этапы</span></li>
+              <li><span class="dot good">✓</span><span>Бюджет и смета</span></li>
+              <li><span class="dot good">✓</span><span>Качество работ</span></li>
+            </ul>
+          </div>
 
-          <p class="direct-label">Или напишите напрямую:</p>
-          <div class="direct-links">
-            <a class="direct-link" href="#" aria-label="Telegram" title="Telegram">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M9.83 14.98 9.45 20c.55 0 .79-.24 1.08-.53l2.58-2.47 5.35 3.92c.98.54 1.67.26 1.93-.9L23.9 3.6c.35-1.42-.51-1.98-1.46-1.62L1.8 9.92c-1.4.55-1.38 1.33-.24 1.68l5.27 1.64L19.07 5.5c.58-.38 1.11-.17.67.22"></path>
-              </svg>
-            </a>
-            <a class="direct-link" href="#" aria-label="WhatsApp" title="WhatsApp">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M20.52 3.48A11.88 11.88 0 0 0 12.05 0C5.51 0 .18 5.33.18 11.87c0 2.09.55 4.13 1.6 5.93L0 24l6.37-1.67a11.82 11.82 0 0 0 5.68 1.45h.01c6.54 0 11.87-5.33 11.87-11.87 0-3.17-1.23-6.14-3.41-8.43Zm-8.47 18.3h-.01a9.84 9.84 0 0 1-5-1.36l-.36-.22-3.78.99 1-3.69-.24-.38a9.87 9.87 0 0 1-1.52-5.25c0-5.43 4.42-9.85 9.86-9.85 2.63 0 5.11 1.03 6.97 2.88a9.8 9.8 0 0 1 2.89 6.98c0 5.43-4.43 9.85-9.86 9.85Zm5.4-7.4c-.3-.15-1.77-.87-2.04-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.95 1.17-.17.2-.35.22-.65.07-.3-.15-1.25-.46-2.39-1.46a8.95 8.95 0 0 1-1.66-2.07c-.18-.3-.02-.46.13-.61.13-.13.3-.35.44-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.03-.52-.07-.15-.67-1.62-.92-2.22-.24-.58-.48-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.01-1.04 2.46 0 1.45 1.06 2.86 1.2 3.06.15.2 2.09 3.19 5.07 4.47.71.3 1.27.48 1.7.62.72.23 1.37.2 1.88.12.57-.09 1.77-.72 2.03-1.42.25-.7.25-1.3.17-1.42-.07-.12-.27-.2-.57-.35Z"></path>
-              </svg>
-            </a>
+          <div class="card reveal">
+            <div class="card-body">
+              <div class="mini-form-head">
+                <div class="mini-form-title">Форма заявки</div>
+                <div class="mini-form-note">Без спама</div>
+              </div>
+              <form class="form js-lead-form" action="#" method="post" novalidate>
+                <input class="field" type="text" name="name" placeholder="Имя" autocomplete="name">
+                <input class="field" type="tel" name="phone" placeholder="+7 (___) ___-__-__" autocomplete="tel" required>
+                <textarea class="field" name="project" placeholder="Краткое описание проекта: ремонт/строительство, площадь (м²)"></textarea>
+                <div class="form-footer">
+                  <button class="btn btn-primary" type="submit">Получить консультацию</button>
+                  <div class="form-help">Свяжемся в течение 2 часов. Только по делу.</div>
+                  <div class="form-status" role="status" aria-live="polite"></div>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       </div>
@@ -1222,34 +809,23 @@
     <div class="container">
       <div class="footer-grid">
         <div>
-          <a class="logo nav-link" href="#hero">ANTIGRAVITY</a>
-          <p class="footer-tagline">Управление ремонтом и строительством в интересах заказчика</p>
+          <a class="logo nav-link" href="#hero" aria-label="Axis">
+            <span class="logo-mark" aria-hidden="true"></span>
+            AXIS
+          </a>
+          <div class="footer-note">Управление ремонтом и строительством в интересах заказчика.</div>
         </div>
-
         <ul class="footer-links">
           <li><a class="nav-link" href="#services">Услуги</a></li>
           <li><a class="nav-link" href="#process">Как работаем</a></li>
-          <li><a class="nav-link" href="#tariffs">Тарифы</a></li>
+          <li><a class="nav-link" href="#cases">Кейсы</a></li>
           <li><a class="nav-link" href="#contacts">Контакты</a></li>
         </ul>
-
-        <div class="footer-social">
-          <a class="direct-link" href="#" aria-label="Telegram" title="Telegram">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M9.83 14.98 9.45 20c.55 0 .79-.24 1.08-.53l2.58-2.47 5.35 3.92c.98.54 1.67.26 1.93-.9L23.9 3.6c.35-1.42-.51-1.98-1.46-1.62L1.8 9.92c-1.4.55-1.38 1.33-.24 1.68l5.27 1.64L19.07 5.5c.58-.38 1.11-.17.67.22"></path>
-            </svg>
-          </a>
-          <a class="direct-link" href="#" aria-label="WhatsApp" title="WhatsApp">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M20.52 3.48A11.88 11.88 0 0 0 12.05 0C5.51 0 .18 5.33.18 11.87c0 2.09.55 4.13 1.6 5.93L0 24l6.37-1.67a11.82 11.82 0 0 0 5.68 1.45h.01c6.54 0 11.87-5.33 11.87-11.87 0-3.17-1.23-6.14-3.41-8.43Zm-8.47 18.3h-.01a9.84 9.84 0 0 1-5-1.36l-.36-.22-3.78.99 1-3.69-.24-.38a9.87 9.87 0 0 1-1.52-5.25c0-5.43 4.42-9.85 9.86-9.85 2.63 0 5.11 1.03 6.97 2.88a9.8 9.8 0 0 1 2.89 6.98c0 5.43-4.43 9.85-9.86 9.85Zm5.4-7.4c-.3-.15-1.77-.87-2.04-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.95 1.17-.17.2-.35.22-.65.07-.3-.15-1.25-.46-2.39-1.46a8.95 8.95 0 0 1-1.66-2.07c-.18-.3-.02-.46.13-.61.13-.13.3-.35.44-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.03-.52-.07-.15-.67-1.62-.92-2.22-.24-.58-.48-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.01-1.04 2.46 0 1.45 1.06 2.86 1.2 3.06.15.2 2.09 3.19 5.07 4.47.71.3 1.27.48 1.7.62.72.23 1.37.2 1.88.12.57-.09 1.77-.72 2.03-1.42.25-.7.25-1.3.17-1.42-.07-.12-.27-.2-.57-.35Z"></path>
-            </svg>
-          </a>
-        </div>
       </div>
 
       <div class="footer-bottom">
-        <span>© 2025 ANTIGRAVITY</span>
-        <a class="footer-policy" href="#">Политика конфиденциальности</a>
+        <span>© 2026 Axis</span>
+        <a class="nav-link" href="#contacts">Политика конфиденциальности</a>
       </div>
     </div>
   </footer>
@@ -1260,7 +836,7 @@
     const mobileOverlay = document.getElementById("mobileOverlay");
     const navLinks = document.querySelectorAll(".nav-link[href^='#']");
     const revealEls = document.querySelectorAll(".reveal");
-    const serviceType = document.getElementById("serviceType");
+    const leadForms = document.querySelectorAll(".js-lead-form");
 
     function updateNavState() {
       if (window.scrollY > 18) {
@@ -1310,7 +886,7 @@
         event.preventDefault();
 
         const navHeight = topNav.offsetHeight;
-        const top = targetEl.getBoundingClientRect().top + window.pageYOffset - navHeight + 1;
+        const top = targetEl.getBoundingClientRect().top + window.pageYOffset - navHeight + 12;
         window.scrollTo({ top, behavior: "smooth" });
 
         if (topNav.classList.contains("menu-open")) {
@@ -1320,7 +896,7 @@
     });
 
     revealEls.forEach((el, idx) => {
-      el.style.setProperty("--d", ((idx % 10) * 80) + "ms");
+      el.style.setProperty("--d", ((idx % 10) * 60) + "ms");
     });
 
     const io = new IntersectionObserver((entries, observer) => {
@@ -1337,8 +913,31 @@
 
     revealEls.forEach((el) => io.observe(el));
 
-    serviceType.addEventListener("change", () => {
-      serviceType.classList.add("selected");
+    function setFormStatus(form, { type, text }) {
+      const statusEl = form.querySelector(".form-status");
+      if (!statusEl) return;
+      statusEl.classList.remove("is-error", "is-success");
+      statusEl.textContent = text;
+      statusEl.classList.add("is-visible");
+      if (type === "error") statusEl.classList.add("is-error");
+      if (type === "success") statusEl.classList.add("is-success");
+    }
+
+    leadForms.forEach((form) => {
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const phone = form.querySelector("input[name='phone']");
+        const phoneValue = (phone?.value || "").trim();
+
+        if (!phoneValue) {
+          setFormStatus(form, { type: "error", text: "Укажите телефон — и мы свяжемся с вами." });
+          phone?.focus();
+          return;
+        }
+
+        setFormStatus(form, { type: "success", text: "Заявка принята. Мы свяжемся с вами в течение 2 часов." });
+        form.reset();
+      });
     });
   </script>
 </body>
