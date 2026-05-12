@@ -3,1351 +3,1137 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AXIS — Независимый контроль ремонта и строительства</title>
-  <meta name="description" content="AXIS представляет интересы клиента: контроль качества, бюджета, сроков и подрядчиков. Удалённые фото/видео отчёты.">
-  <link rel="preload" as="image" href="hero.webp">
+  <title>AXIS — Управление строительными проектами</title>
+  <meta name="description" content="AXIS — независимый контроль строительных проектов. Контроль бюджета, сроков и качества.">
+  <link rel="preload" as="image" href="hero.jpeg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poiret+One&display=swap" rel="stylesheet">
 
   <style>
-    /* ─── TOKENS ─────────────────────────────────────── */
-    :root {
-      --bg:       #080808;
-      --surface:  #0F0F0F;
-      --s2:       #141414;
-      --text:     #F0EDE8;
-      --muted:    #4C4844;
-      --accent:   #C4A46B;
-      --accent-d: #A8873A;
-      --danger:   #A04040;
-      --border:   rgba(240,237,232,.06);
-      --border-a: rgba(196,164,107,.22);
-      --r: 0px;
+    /* ── RESET & BASE ─────────────────────────────────── */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Poiret One', cursive;
     }
 
-    /* ─── RESET ──────────────────────────────────────── */
-    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
-    html { scroll-behavior:smooth; font-size:16px; }
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
-      background:var(--bg);
-      color:var(--text);
-      font-family:'Syne', sans-serif;
-      font-weight:400;
-      line-height:1.6;
-      overflow-x:hidden;
-      cursor:none;
-    }
-    a { color:inherit; text-decoration:none; }
-    img { display:block; }
-    button, input, select, textarea { font:inherit; color:inherit; background:none; border:none; outline:none; cursor:none; }
-    ul { list-style:none; }
-
-    /* ─── CURSOR ─────────────────────────────────────── */
-    #cursor {
-      position:fixed;
-      top:0; left:0;
-      width:8px; height:8px;
-      background:var(--accent);
-      border-radius:50%;
-      pointer-events:none;
-      z-index:9999;
-      transform:translate(-50%,-50%);
-      transition:transform .12s ease, width .2s ease, height .2s ease, background .2s ease;
-      mix-blend-mode:difference;
-    }
-    #cursor.grow { width:32px; height:32px; background:rgba(196,164,107,.4); }
-
-    /* ─── GRAIN OVERLAY ──────────────────────────────── */
-    body::after {
-      content:'';
-      position:fixed;
-      inset:0;
-      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-      pointer-events:none;
-      z-index:9000;
-      opacity:.55;
+      background: #E8E4D9;
+      color: #1F3028;
+      overflow-x: hidden;
     }
 
-    /* ─── LAYOUT ──────────────────────────────────────── */
-    .container { width:min(1280px, calc(100% - 72px)); margin:0 auto; }
-    .section { padding:140px 0; border-top:1px solid var(--border); }
-
-    /* ─── REVEAL ──────────────────────────────────────── */
-    .reveal {
-      opacity:0;
-      transform:translateY(28px);
-      transition:opacity .85s cubic-bezier(.16,1,.3,1), transform .85s cubic-bezier(.16,1,.3,1);
-      transition-delay:var(--d,0ms);
-    }
-    .reveal.in { opacity:1; transform:none; }
-    .reveal-line {
-      overflow:hidden;
-    }
-    .reveal-line > span {
-      display:block;
-      transform:translateY(100%);
-      transition:transform .9s cubic-bezier(.16,1,.3,1);
-      transition-delay:var(--d,0ms);
-    }
-    .reveal-line.in > span { transform:translateY(0); }
-
-    /* ─── TYPOGRAPHY HELPERS ──────────────────────────── */
-    .eyebrow {
-      font-family:'Syne', sans-serif;
-      font-size:11px;
-      font-weight:600;
-      letter-spacing:.22em;
-      text-transform:uppercase;
-      color:var(--accent);
-      display:flex;
-      align-items:center;
-      gap:10px;
-    }
-    .eyebrow::before {
-      content:'';
-      display:block;
-      width:28px;
-      height:1px;
-      background:var(--accent);
-      flex-shrink:0;
+    /* ── NAVIGATION ───────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: #E8E4D9;
+      border-bottom: 1px solid rgba(31, 48, 40, 0.1);
+      transition: box-shadow 0.3s ease;
     }
 
-    .display {
-      font-family:'Cormorant', serif;
-      font-size:clamp(60px, 8.5vw, 120px);
-      font-weight:300;
-      line-height:.9;
-      letter-spacing:-.01em;
+    nav.scrolled {
+      box-shadow: 0 1px 20px rgba(31, 48, 40, 0.08);
     }
-    .display em { font-style:italic; color:var(--accent); }
 
-    /* ─── NAV ─────────────────────────────────────────── */
-    .nav {
-      position:fixed;
-      top:0; left:0;
-      width:100%;
-      z-index:800;
-      transition:background .3s ease, backdrop-filter .3s ease, border-color .3s ease;
-      border-bottom:1px solid transparent;
-    }
-    .nav.scrolled {
-      background:rgba(8,8,8,.92);
-      backdrop-filter:blur(16px) saturate(180%);
-      border-bottom-color:var(--border);
-    }
     .nav-inner {
-      height:80px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:24px;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 40px;
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 32px;
     }
-    .nav-logo {
-      font-family:'Cormorant', serif;
-      font-size:26px;
-      font-weight:600;
-      letter-spacing:.14em;
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-shrink: 0;
     }
-    .nav-logo span { color:var(--accent); }
+
+    .logo-square {
+      width: 36px;
+      height: 36px;
+      border: 1px solid #1F3028;
+      flex-shrink: 0;
+    }
+
+    .nav-brand {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .nav-title {
+      font-size: 22px;
+      color: #1F3028;
+      letter-spacing: 0.2em;
+      line-height: 1;
+    }
+
+    .nav-phone {
+      font-size: 13px;
+      color: #5C6B5E;
+      line-height: 1;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
 
     .nav-links {
-      display:flex;
-      align-items:center;
-      gap:36px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      list-style: none;
     }
-    .nav-links a {
-      font-size:12px;
-      font-weight:600;
-      letter-spacing:.1em;
-      text-transform:uppercase;
-      color:var(--muted);
-      transition:color .2s;
-      position:relative;
-    }
-    .nav-links a::after {
-      content:'';
-      position:absolute;
-      left:0; bottom:-3px;
-      width:0; height:1px;
-      background:var(--accent);
-      transition:width .3s ease;
-    }
-    .nav-links a:hover { color:var(--text); }
-    .nav-links a:hover::after { width:100%; }
 
-    .nav-cta {
-      font-size:11px;
-      font-weight:600;
-      letter-spacing:.14em;
-      text-transform:uppercase;
-      border:1px solid var(--border-a);
-      color:var(--accent);
-      padding:10px 22px;
-      transition:background .2s, color .2s, border-color .2s;
+    .nav-links a {
+      font-size: 13px;
+      color: #1F3028;
+      text-decoration: none;
+      letter-spacing: 0.04em;
+      transition: color 0.2s;
     }
-    .nav-cta:hover {
-      background:var(--accent);
-      color:var(--bg);
-      border-color:var(--accent);
+
+    .nav-links a:hover {
+      color: #2A3F32;
+    }
+
+    .nav-buttons {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .btn {
+      font-size: 13px;
+      border-radius: 100px;
+      padding: 10px 24px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+      line-height: 1;
+      border: 1px solid transparent;
+    }
+
+    .btn-primary {
+      background: #1F3028;
+      color: #E8E4D9;
+      border-color: #1F3028;
+    }
+
+    .btn-primary:hover {
+      background: #2A3F32;
+      border-color: #2A3F32;
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: #1F3028;
+      border-color: #1F3028;
+    }
+
+    .btn-ghost:hover {
+      background: rgba(31, 48, 40, 0.06);
     }
 
     .hamburger {
-      display:none;
-      width:40px; height:40px;
-      border:1px solid var(--border);
-      position:relative;
-      z-index:901;
-      flex-shrink:0;
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+      background: none;
+      border: none;
     }
+
     .hamburger span {
-      position:absolute;
-      left:9px; right:9px;
-      height:1px;
-      background:var(--text);
-      transition:top .22s, transform .22s, opacity .22s;
-    }
-    .hamburger span:nth-child(1) { top:13px; }
-    .hamburger span:nth-child(2) { top:19px; }
-    .hamburger span:nth-child(3) { top:25px; }
-    .nav.open .hamburger span:nth-child(1) { top:19px; transform:rotate(45deg); }
-    .nav.open .hamburger span:nth-child(2) { opacity:0; }
-    .nav.open .hamburger span:nth-child(3) { top:19px; transform:rotate(-45deg); }
-
-    .mobile-menu {
-      position:fixed;
-      inset:0;
-      background:rgba(8,8,8,.98);
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      gap:10px;
-      opacity:0;
-      visibility:hidden;
-      pointer-events:none;
-      transition:opacity .3s, visibility .3s;
-      z-index:900;
-    }
-    .nav.open .mobile-menu { opacity:1; visibility:visible; pointer-events:auto; }
-    .mobile-menu a {
-      font-family:'Cormorant', serif;
-      font-size:clamp(42px,10vw,64px);
-      font-weight:300;
-      letter-spacing:.04em;
-      color:var(--text);
-      transition:color .2s;
-    }
-    .mobile-menu a:hover { color:var(--accent); }
-
-    /* ─── HERO ────────────────────────────────────────── */
-    .hero {
-      position:relative;
-      min-height:100svh;
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      border-top:none;
-      overflow:hidden;
+      display: block;
+      width: 24px;
+      height: 1.5px;
+      background: #1F3028;
+      transition: transform 0.3s, opacity 0.3s;
     }
 
-    /* left col */
-    .hero-left {
-      position:relative;
-      z-index:2;
-      display:flex;
-      flex-direction:column;
-      justify-content:flex-end;
-      padding:140px 72px 120px;
-      background:var(--bg);
+    .hamburger.open span:nth-child(1) {
+      transform: translateY(6.5px) rotate(45deg);
     }
-    .hero-eyebrow { margin-bottom:28px; }
+
+    .hamburger.open span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .hamburger.open span:nth-child(3) {
+      transform: translateY(-6.5px) rotate(-45deg);
+    }
+
+    /* Mobile menu overlay */
+    .mobile-overlay {
+      display: none;
+      position: fixed;
+      inset: 68px 0 0 0;
+      background: #E8E4D9;
+      z-index: 999;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+      border-top: 1px solid rgba(31, 48, 40, 0.1);
+    }
+
+    .mobile-overlay.open {
+      display: flex;
+    }
+
+    .mobile-nav-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .mobile-nav-links a {
+      font-size: 22px;
+      color: #1F3028;
+      text-decoration: none;
+      letter-spacing: 0.08em;
+    }
+
+    .mobile-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: center;
+    }
+
+    /* ── HERO ─────────────────────────────────────────── */
+    #hero {
+      height: 100vh;
+      min-height: 600px;
+      background-image: url('hero.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 80px 24px 0;
+    }
+
+    .hero-text-block {
+      background: rgba(232, 228, 217, 0.72);
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
+      padding: 40px 60px;
+      display: inline-block;
+      max-width: 900px;
+    }
+
+    .hero-overline {
+      font-size: 11px;
+      color: #5C6B5E;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      display: block;
+    }
+
     .hero-heading {
-      font-family:'Cormorant', serif;
-      font-size:clamp(68px,9vw,128px);
-      font-weight:300;
-      line-height:.86;
-      letter-spacing:-.01em;
-    }
-    .hero-heading .line { display:block; overflow:hidden; }
-    .hero-heading .line span {
-      display:block;
-      transform:translateY(110%);
-      transition:transform 1s cubic-bezier(.16,1,.3,1);
-    }
-    .hero-heading .line:nth-child(2) span { transition-delay:.12s; }
-    .hero-heading .line:nth-child(3) span { transition-delay:.24s; color:var(--accent); font-style:italic; }
-    .hero.loaded .hero-heading .line span { transform:translateY(0); }
-
-    .hero-subtext {
-      margin-top:28px;
-      max-width:38ch;
-      font-size:15px;
-      line-height:1.7;
-      color:rgba(240,237,232,.45);
-      opacity:0;
-      transform:translateY(18px);
-      transition:opacity .9s ease .5s, transform .9s ease .5s;
-    }
-    .hero.loaded .hero-subtext { opacity:1; transform:none; }
-
-    .hero-actions {
-      margin-top:36px;
-      display:flex;
-      align-items:center;
-      gap:24px;
-      flex-wrap:wrap;
-      opacity:0;
-      transition:opacity .8s ease .7s;
-    }
-    .hero.loaded .hero-actions { opacity:1; }
-
-    .btn-primary {
-      background:var(--accent);
-      color:var(--bg);
-      font-family:'Syne', sans-serif;
-      font-size:12px;
-      font-weight:700;
-      letter-spacing:.14em;
-      text-transform:uppercase;
-      padding:16px 34px;
-      transition:background .2s, transform .2s;
-    }
-    .btn-primary:hover { background:var(--accent-d); transform:translateY(-1px); }
-
-    .btn-ghost {
-      font-size:12px;
-      font-weight:600;
-      letter-spacing:.1em;
-      text-transform:uppercase;
-      color:var(--muted);
-      display:flex;
-      align-items:center;
-      gap:8px;
-      transition:color .2s;
-    }
-    .btn-ghost .arrow {
-      display:inline-block;
-      transition:transform .2s;
-    }
-    .btn-ghost:hover { color:var(--text); }
-    .btn-ghost:hover .arrow { transform:translateX(4px); }
-
-    /* right col — image */
-    .hero-image-wrap {
-      position:relative;
-      overflow:hidden;
-    }
-    .hero-image-wrap::before {
-      content:'';
-      position:absolute;
-      inset:0;
-      background:linear-gradient(to right, var(--bg) 0%, transparent 18%),
-                 linear-gradient(to bottom, rgba(8,8,8,.3) 0%, transparent 30%, rgba(8,8,8,.5) 100%);
-      z-index:1;
-    }
-    .hero-img {
-      width:100%;
-      height:100%;
-      object-fit:cover;
-      object-position:center top;
-      transform:scale(1.06);
-      transition:transform 8s ease;
-      will-change:transform;
-    }
-    .hero.loaded .hero-img { transform:scale(1); }
-
-    /* stats bar */
-    .hero-stats {
-      position:absolute;
-      left:0; right:0; bottom:0;
-      z-index:3;
-      background:rgba(8,8,8,.75);
-      backdrop-filter:blur(10px);
-      border-top:1px solid var(--border);
-    }
-    .hero-stats-inner {
-      display:grid;
-      grid-template-columns:repeat(4,1fr);
-    }
-    .stat {
-      padding:20px 28px;
-      border-right:1px solid var(--border);
-    }
-    .stat:last-child { border-right:none; }
-    .stat-num {
-      font-family:'Cormorant', serif;
-      font-size:46px;
-      font-weight:300;
-      line-height:.88;
-      color:var(--accent);
-      letter-spacing:-.02em;
-    }
-    .stat-label {
-      margin-top:6px;
-      font-size:11px;
-      font-weight:600;
-      letter-spacing:.1em;
-      text-transform:uppercase;
-      color:var(--muted);
+      font-size: clamp(36px, 6vw, 80px);
+      color: #1F3028;
+      line-height: 1.05;
+      letter-spacing: 0.03em;
     }
 
-    /* ─── MARQUEE STRIP ───────────────────────────────── */
-    .marquee-strip {
-      border-top:1px solid var(--border);
-      border-bottom:1px solid var(--border);
-      background:var(--surface);
-      overflow:hidden;
-      padding:14px 0;
-    }
-    .marquee-track {
-      display:flex;
-      gap:0;
-      animation:marquee 28s linear infinite;
-      width:max-content;
-    }
-    @keyframes marquee {
-      from { transform:translateX(0); }
-      to   { transform:translateX(-50%); }
-    }
-    .marquee-item {
-      white-space:nowrap;
-      padding:0 40px;
-      font-size:12px;
-      font-weight:600;
-      letter-spacing:.18em;
-      text-transform:uppercase;
-      color:var(--muted);
-      display:flex;
-      align-items:center;
-      gap:40px;
-    }
-    .marquee-item::after {
-      content:'✦';
-      color:var(--accent);
-      font-size:10px;
+    .hero-subheading {
+      font-size: clamp(16px, 2.5vw, 24px);
+      color: #5C6B5E;
+      margin-top: 16px;
     }
 
-    /* ─── PROBLEM ─────────────────────────────────────── */
-    .problem-grid {
-      margin-top:56px;
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:2px;
+    .hero-buttons {
+      margin-top: 36px;
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
     }
-    .panel {
-      padding:52px;
-      position:relative;
-    }
-    .panel-bad {
-      background:var(--surface);
-      border:1px solid var(--border);
-    }
-    .panel-good {
-      background:var(--s2);
-      border:1px solid var(--border-a);
-    }
-    .panel-head {
-      font-family:'Cormorant', serif;
-      font-size:clamp(28px,3vw,38px);
-      font-weight:400;
-      line-height:1;
-      margin-bottom:32px;
-      display:flex;
-      align-items:center;
-      gap:14px;
-    }
-    .panel-head-icon {
-      width:32px; height:32px;
-      border-radius:50%;
-      border:1px solid;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-size:16px;
-      flex-shrink:0;
-    }
-    .panel-bad .panel-head-icon { border-color:var(--danger); color:var(--danger); }
-    .panel-good .panel-head-icon { border-color:var(--accent); color:var(--accent); }
-    .panel-list { display:grid; gap:18px; }
-    .panel-list li {
-      display:flex;
-      gap:14px;
-      font-size:15px;
-      line-height:1.6;
-      padding-bottom:18px;
-      border-bottom:1px solid var(--border);
-    }
-    .panel-list li:last-child { border-bottom:none; padding-bottom:0; }
-    .panel-bad .panel-list li { color:rgba(240,237,232,.45); }
-    .panel-good .panel-list li { color:var(--text); }
-    .li-mark { flex-shrink:0; margin-top:2px; }
-    .panel-bad .li-mark { color:var(--danger); }
-    .panel-good .li-mark { color:var(--accent); }
 
-    /* ─── SERVICES ────────────────────────────────────── */
-    .services-grid {
-      margin-top:56px;
-      display:grid;
-      grid-template-columns:repeat(2,1fr);
-      gap:2px;
+    .hero-buttons .btn {
+      font-size: 15px;
+      padding: 16px 36px;
     }
-    .service-card {
-      background:var(--surface);
-      border:1px solid var(--border);
-      padding:48px;
-      position:relative;
-      overflow:hidden;
-      transition:border-color .3s;
-    }
-    .service-card::before {
-      content:'';
-      position:absolute;
-      top:0; left:0; right:0;
-      height:2px;
-      background:var(--accent);
-      transform:scaleX(0);
-      transform-origin:left;
-      transition:transform .4s ease;
-    }
-    .service-card:hover { border-color:var(--border-a); }
-    .service-card:hover::before { transform:scaleX(1); }
-    .service-num {
-      font-family:'Cormorant', serif;
-      font-size:72px;
-      font-weight:300;
-      color:rgba(196,164,107,.12);
-      line-height:1;
-      position:absolute;
-      top:36px; right:40px;
-      letter-spacing:-.02em;
-      transition:color .3s;
-    }
-    .service-card:hover .service-num { color:rgba(196,164,107,.22); }
-    .service-icon {
-      width:40px; height:40px;
-      margin-bottom:24px;
-      color:var(--accent);
-    }
-    .service-icon svg { width:100%; height:100%; stroke:currentColor; fill:none; stroke-width:1.3; stroke-linecap:round; stroke-linejoin:round; }
-    .service-title {
-      font-family:'Cormorant', serif;
-      font-size:clamp(24px,2.5vw,32px);
-      font-weight:400;
-      line-height:1.05;
-      margin-bottom:16px;
-    }
-    .service-text { font-size:14px; line-height:1.75; color:rgba(240,237,232,.45); max-width:44ch; }
 
-    /* ─── PROCESS ─────────────────────────────────────── */
-    .process-list {
-      margin-top:56px;
-      display:grid;
-      gap:2px;
+    /* ── SECTION BASE ─────────────────────────────────── */
+    section {
+      padding: 100px 0;
     }
-    .process-item {
-      display:grid;
-      grid-template-columns:90px 1fr;
-      gap:32px;
-      align-items:start;
-      background:var(--surface);
-      border:1px solid var(--border);
-      padding:36px 48px;
-      position:relative;
-      overflow:hidden;
-      transition:border-color .3s;
-    }
-    .process-item::after {
-      content:'';
-      position:absolute;
-      left:0; top:0; bottom:0;
-      width:2px;
-      background:var(--accent);
-      transform:scaleY(0);
-      transform-origin:top;
-      transition:transform .5s ease;
-    }
-    .process-item:hover { border-color:var(--border-a); }
-    .process-item:hover::after { transform:scaleY(1); }
-    .process-num {
-      font-family:'Cormorant', serif;
-      font-size:56px;
-      font-weight:300;
-      color:var(--accent);
-      line-height:.85;
-      letter-spacing:-.02em;
-    }
-    .process-body {}
-    .process-title {
-      font-family:'Cormorant', serif;
-      font-size:clamp(22px,2.5vw,30px);
-      font-weight:400;
-      line-height:1.1;
-      margin-bottom:10px;
-    }
-    .process-text { font-size:14px; line-height:1.75; color:rgba(240,237,232,.45); }
 
-    /* ─── TARIFFS ─────────────────────────────────────── */
-    .tariffs-grid {
-      margin-top:56px;
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:2px;
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 40px;
     }
-    .tariff {
-      background:var(--surface);
-      border:1px solid var(--border);
-      padding:40px 36px;
-      display:flex;
-      flex-direction:column;
-      position:relative;
-      transition:border-color .3s, background .3s;
-    }
-    .tariff.featured {
-      background:var(--s2);
-      border-color:var(--border-a);
-    }
-    .tariff.featured::before {
-      content:'ПОПУЛЯРНЫЙ';
-      position:absolute;
-      top:0; left:0; right:0;
-      background:var(--accent);
-      color:var(--bg);
-      font-size:10px;
-      font-weight:700;
-      letter-spacing:.2em;
-      text-align:center;
-      padding:6px;
-    }
-    .tariff.featured { padding-top:56px; }
-    .tariff-name {
-      font-family:'Cormorant', serif;
-      font-size:clamp(26px,2.8vw,34px);
-      font-weight:400;
-      line-height:1;
-      margin-bottom:10px;
-    }
-    .tariff-price {
-      font-size:12px;
-      font-weight:600;
-      letter-spacing:.1em;
-      text-transform:uppercase;
-      color:var(--accent);
-      margin-bottom:28px;
-      padding-bottom:20px;
-      border-bottom:1px solid var(--border);
-    }
-    .tariff-list { display:grid; gap:12px; margin-bottom:auto; }
-    .tariff-list li {
-      font-size:13px;
-      line-height:1.6;
-      color:rgba(240,237,232,.55);
-      display:flex;
-      gap:10px;
-    }
-    .tariff-list li::before { content:'—'; color:var(--accent); flex-shrink:0; }
-    .tariff-cta {
-      margin-top:28px;
-      padding-top:20px;
-      border-top:1px solid var(--border);
-      font-size:11px;
-      font-weight:600;
-      letter-spacing:.12em;
-      text-transform:uppercase;
-      color:var(--accent);
-      transition:color .2s;
-      display:flex;
-      align-items:center;
-      gap:8px;
-    }
-    .tariff-cta:hover { color:var(--text); }
 
-    /* ─── CONTACT ─────────────────────────────────────── */
+    .section-title {
+      font-size: 48px;
+      color: #1F3028;
+      text-align: center;
+      letter-spacing: 0.06em;
+      margin-bottom: 64px;
+    }
+
+    /* ── BLOCK II — ADVANTAGES ────────────────────────── */
+    #advantages {
+      background: #E8E4D9;
+    }
+
+    .advantages-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 20px;
+    }
+
+    .adv-card {
+      background: #F0EDE6;
+      border: 1px solid rgba(31, 48, 40, 0.1);
+      padding: 36px 28px;
+      border-radius: 4px;
+      transition: border-color 0.25s;
+    }
+
+    .adv-card:hover {
+      border-color: rgba(31, 48, 40, 0.35);
+    }
+
+    .adv-number {
+      font-size: 64px;
+      color: rgba(31, 48, 40, 0.08);
+      line-height: 1;
+      display: block;
+    }
+
+    .adv-title {
+      font-size: 18px;
+      color: #1F3028;
+      margin-top: -20px;
+      position: relative;
+      line-height: 1.3;
+    }
+
+    .adv-desc {
+      font-size: 14px;
+      color: #5C6B5E;
+      line-height: 1.75;
+      margin-top: 12px;
+    }
+
+    /* ── BLOCK III — STAGES ───────────────────────────── */
+    #stages {
+      background: #DEDAD0;
+    }
+
+    .stages-list {
+      list-style: none;
+    }
+
+    .stage-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 40px;
+      padding: 40px 0;
+      border-bottom: 1px solid rgba(31, 48, 40, 0.1);
+    }
+
+    .stage-item:first-child {
+      border-top: 1px solid rgba(31, 48, 40, 0.1);
+    }
+
+    .stage-number {
+      font-size: 96px;
+      color: rgba(31, 48, 40, 0.07);
+      line-height: 0.85;
+      flex-shrink: 0;
+      width: 140px;
+      text-align: right;
+    }
+
+    .stage-content {
+      padding-top: 8px;
+      flex: 1;
+    }
+
+    .stage-title {
+      font-size: 22px;
+      color: #1F3028;
+      letter-spacing: 0.03em;
+    }
+
+    .stage-desc {
+      font-size: 15px;
+      color: #5C6B5E;
+      line-height: 1.7;
+      margin-top: 10px;
+    }
+
+    /* ── BLOCK IV — PRICING ───────────────────────────── */
+    #pricing {
+      background: #E8E4D9;
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      align-items: start;
+    }
+
+    .price-card {
+      background: #F0EDE6;
+      border: 1px solid rgba(31, 48, 40, 0.12);
+      border-radius: 4px;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .price-card.featured {
+      background: #1F3028;
+      border-color: #1F3028;
+    }
+
+    .price-badge {
+      display: inline-block;
+      background: #E8E4D9;
+      color: #1F3028;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      padding: 4px 12px;
+      border-radius: 100px;
+      margin-bottom: 20px;
+      align-self: flex-start;
+    }
+
+    .price-name {
+      font-size: 22px;
+      color: #1F3028;
+      letter-spacing: 0.04em;
+      margin-bottom: 10px;
+    }
+
+    .price-card.featured .price-name {
+      color: #E8E4D9;
+    }
+
+    .price-label {
+      font-size: 13px;
+      color: #5C6B5E;
+      margin-bottom: 28px;
+    }
+
+    .price-card.featured .price-label {
+      color: rgba(232, 228, 217, 0.6);
+    }
+
+    .price-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 36px;
+      flex: 1;
+    }
+
+    .price-list li {
+      font-size: 14px;
+      color: #5C6B5E;
+      line-height: 1.5;
+      padding-left: 16px;
+      position: relative;
+    }
+
+    .price-list li::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: rgba(31, 48, 40, 0.3);
+    }
+
+    .price-card.featured .price-list li {
+      color: rgba(232, 228, 217, 0.75);
+    }
+
+    .price-card.featured .price-list li::before {
+      color: rgba(232, 228, 217, 0.3);
+    }
+
+    .price-card .btn {
+      align-self: stretch;
+      justify-content: center;
+      font-size: 14px;
+      padding: 14px 24px;
+    }
+
+    .btn-cream {
+      background: #E8E4D9;
+      color: #1F3028;
+      border-color: #E8E4D9;
+    }
+
+    .btn-cream:hover {
+      background: #DEDAD0;
+      border-color: #DEDAD0;
+    }
+
+    /* ── BLOCK V — TELEGRAM ───────────────────────────── */
+    #telegram {
+      background: #DEDAD0;
+      text-align: center;
+    }
+
+    .tg-subtitle {
+      font-size: 16px;
+      color: #5C6B5E;
+      margin-bottom: 40px;
+      margin-top: 16px;
+    }
+
+    .tg-note {
+      font-size: 13px;
+      color: #5C6B5E;
+      margin-top: 20px;
+    }
+
+    #telegram .btn {
+      font-size: 18px;
+      padding: 20px 60px;
+    }
+
+    /* ── BLOCK VI — CONTACTS + CASES ─────────────────── */
+    #contacts {
+      background: #E8E4D9;
+    }
+
     .contacts-grid {
-      margin-top:56px;
-      display:grid;
-      grid-template-columns:1.15fr 1fr;
-      gap:2px;
-    }
-    .contacts-info {
-      background:var(--surface);
-      border:1px solid var(--border);
-      padding:56px;
-      display:flex;
-      flex-direction:column;
-      gap:28px;
-    }
-    .contacts-brand {
-      font-family:'Cormorant', serif;
-      font-size:clamp(72px,10vw,120px);
-      font-weight:300;
-      line-height:.82;
-      letter-spacing:-.02em;
-    }
-    .contacts-brand em { font-style:italic; color:var(--accent); }
-    .contacts-copy { font-size:15px; line-height:1.75; color:rgba(240,237,232,.45); max-width:48ch; }
-    .contacts-checklist { display:grid; gap:14px; }
-    .contacts-checklist li {
-      display:flex;
-      align-items:center;
-      gap:12px;
-      font-size:13px;
-      line-height:1.5;
-      color:rgba(240,237,232,.55);
-    }
-    .contacts-checklist li::before {
-      content:'';
-      width:18px; height:18px;
-      border:1px solid var(--border-a);
-      border-radius:50%;
-      background:radial-gradient(circle at 50% 50%, rgba(196,164,107,.2), transparent);
-      flex-shrink:0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
     }
 
-    .contacts-form {
-      background:var(--s2);
-      border:1px solid var(--border);
-      padding:48px;
+    .contacts-title,
+    .cases-title {
+      font-size: 36px;
+      color: #1F3028;
+      letter-spacing: 0.05em;
+      margin-bottom: 36px;
     }
-    .form { display:grid; gap:12px; }
-    .field {
-      width:100%;
-      border:1px solid var(--border);
-      background:rgba(8,8,8,.8);
-      padding:14px 16px;
-      font-size:14px;
-      transition:border-color .2s;
-    }
-    .field::placeholder { color:var(--muted); }
-    .field:focus { border-color:var(--border-a); }
-    select.field { appearance:none; color:var(--muted); }
-    select.field.sel { color:var(--text); }
-    textarea.field { resize:vertical; min-height:120px; }
-    .form-submit {
-      width:100%;
-      margin-top:6px;
-      background:var(--accent);
-      color:var(--bg);
-      font-family:'Syne', sans-serif;
-      font-size:12px;
-      font-weight:700;
-      letter-spacing:.16em;
-      text-transform:uppercase;
-      padding:16px;
-      transition:background .2s, transform .15s;
-    }
-    .form-submit:hover { background:var(--accent-d); transform:translateY(-1px); }
-    .form-note { font-size:11px; color:var(--muted); margin-top:10px; }
 
-    /* ─── FOOTER ──────────────────────────────────────── */
+    .contact-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 18px 0;
+      border-bottom: 1px solid rgba(31, 48, 40, 0.1);
+    }
+
+    .contact-row:first-of-type {
+      border-top: 1px solid rgba(31, 48, 40, 0.1);
+    }
+
+    .contact-icon {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      color: #1F3028;
+    }
+
+    .contact-text {
+      font-size: 16px;
+      color: #1F3028;
+      text-decoration: none;
+    }
+
+    .contact-text:hover {
+      color: #2A3F32;
+    }
+
+    .cases-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .case-card {
+      background: #F0EDE6;
+      border: 1px solid rgba(31, 48, 40, 0.12);
+      padding: 28px;
+      border-radius: 4px;
+    }
+
+    .case-card p {
+      font-size: 14px;
+      color: #5C6B5E;
+    }
+
+    /* ── FOOTER ───────────────────────────────────────── */
     footer {
-      border-top:1px solid var(--border-a);
-      padding:52px 0 28px;
+      background: #1F3028;
+      padding: 60px 0 40px;
     }
+
+    .footer-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 40px;
+    }
+
     .footer-top {
-      display:grid;
-      grid-template-columns:1.5fr 1fr 1fr;
-      gap:48px;
-      padding-bottom:40px;
-      border-bottom:1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 40px;
+      margin-bottom: 48px;
+      flex-wrap: wrap;
     }
+
+    .footer-brand {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
     .footer-logo {
-      font-family:'Cormorant', serif;
-      font-size:32px;
-      font-weight:600;
-      letter-spacing:.12em;
+      font-size: 28px;
+      color: #E8E4D9;
+      letter-spacing: 0.2em;
     }
-    .footer-logo span { color:var(--accent); }
-    .footer-tag { margin-top:10px; font-size:13px; line-height:1.6; color:var(--muted); max-width:36ch; }
-    .footer-col-title {
-      font-size:10px;
-      font-weight:700;
-      letter-spacing:.18em;
-      text-transform:uppercase;
-      color:var(--muted);
-      margin-bottom:18px;
+
+    .footer-tagline {
+      font-size: 13px;
+      color: rgba(232, 228, 217, 0.5);
     }
-    .footer-links { display:grid; gap:12px; }
+
+    .footer-links {
+      display: flex;
+      gap: 28px;
+      flex-wrap: wrap;
+      list-style: none;
+    }
+
     .footer-links a {
-      font-size:13px;
-      color:rgba(240,237,232,.4);
-      transition:color .2s;
+      font-size: 13px;
+      color: rgba(232, 228, 217, 0.6);
+      text-decoration: none;
+      transition: color 0.2s;
     }
-    .footer-links a:hover { color:var(--text); }
+
+    .footer-links a:hover {
+      color: rgba(232, 228, 217, 0.9);
+    }
+
     .footer-bottom {
-      margin-top:28px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:16px;
-      flex-wrap:wrap;
-      font-size:11px;
-      color:var(--muted);
+      border-top: 1px solid rgba(232, 228, 217, 0.08);
+      padding-top: 24px;
     }
 
-    /* ─── HORIZONTAL DIVIDER DECORATION ──────────────── */
-    .sec-divider {
-      display:flex;
-      align-items:center;
-      gap:18px;
-      margin-bottom:52px;
-    }
-    .sec-divider-line {
-      flex:1;
-      height:1px;
-      background:var(--border);
+    .footer-copy {
+      font-size: 12px;
+      color: rgba(232, 228, 217, 0.4);
     }
 
-    /* ─── RESPONSIVE ──────────────────────────────────── */
-    @media (max-width:1100px) {
-      .hero { grid-template-columns:1fr; min-height:100svh; }
-      .hero-left { padding:120px 40px 200px; justify-content:center; }
-      .hero-image-wrap {
-        position:absolute;
-        inset:0;
-        z-index:0;
+    /* ── SCROLL ANIMATIONS ────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── RESPONSIVE ───────────────────────────────────── */
+    @media (max-width: 1200px) {
+      .advantages-grid {
+        grid-template-columns: repeat(3, 1fr);
       }
-      .hero-image-wrap::before {
-        background:linear-gradient(to bottom,
-          rgba(8,8,8,.65) 0%,
-          rgba(8,8,8,.4) 50%,
-          rgba(8,8,8,.85) 100%);
+    }
+
+    @media (max-width: 1024px) {
+      .pricing-grid {
+        grid-template-columns: 1fr;
+        max-width: 520px;
+        margin: 0 auto;
       }
-      .hero-left { position:relative; z-index:2; background:transparent; }
-      .hero-heading { color:#fff; }
-    }
-    @media (max-width:900px) {
-      .container { width:calc(100% - 48px); }
-      .nav-links, .nav-cta { display:none; }
-      .hamburger { display:flex; align-items:center; justify-content:center; }
-      .section { padding:100px 0; }
-      .problem-grid, .services-grid, .contacts-grid { grid-template-columns:1fr; }
-      .tariffs-grid { grid-template-columns:repeat(2,1fr); }
-      .footer-top { grid-template-columns:1fr; gap:32px; }
-      .hero-stats-inner { grid-template-columns:repeat(2,1fr); }
-      .stat:nth-child(2) { border-right:none; }
-    }
-    @media (max-width:640px) {
-      .container { width:calc(100% - 32px); }
-      .hero-left { padding:110px 24px 180px; }
-      .hero-stats-inner { grid-template-columns:1fr 1fr; }
-      .stat { padding:16px 18px; }
-      .stat-num { font-size:36px; }
-      .panel, .service-card, .process-item, .contacts-info, .contacts-form { padding:32px 26px; }
-      .process-item { grid-template-columns:1fr; gap:12px; }
-      .tariffs-grid { grid-template-columns:1fr; }
-      .hero-actions { flex-direction:column; align-items:flex-start; }
-      .btn-primary { width:100%; text-align:center; }
-      .contacts-brand { font-size:clamp(52px,14vw,80px); }
+
+      .contacts-grid {
+        grid-template-columns: 1fr;
+        gap: 60px;
+      }
+
+      .nav-links,
+      .nav-buttons {
+        display: none;
+      }
+
+      .hamburger {
+        display: flex;
+      }
     }
 
-    /* ─── SCROLL INDICATOR ────────────────────────────── */
-    .scroll-line {
-      position:absolute;
-      left:72px;
-      bottom:130px;
-      z-index:3;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      gap:8px;
-      opacity:0;
-      transition:opacity .8s 1.2s;
-    }
-    .hero.loaded .scroll-line { opacity:1; }
-    .scroll-line span {
-      font-size:10px;
-      font-weight:600;
-      letter-spacing:.2em;
-      text-transform:uppercase;
-      color:var(--muted);
-      writing-mode:vertical-rl;
-    }
-    .scroll-line-bar {
-      width:1px;
-      height:48px;
-      background:linear-gradient(to bottom, var(--accent), transparent);
-      animation:pulse-line 2.2s ease-in-out infinite;
-    }
-    @keyframes pulse-line {
-      0%,100% { opacity:.4; }
-      50% { opacity:1; }
+    @media (max-width: 768px) {
+      .nav-inner {
+        padding: 0 20px;
+      }
+
+      .advantages-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .section-title {
+        font-size: 34px;
+      }
+
+      .hero-text-block {
+        padding: 28px 28px;
+      }
+
+      section {
+        padding: 70px 0;
+      }
+
+      .container {
+        padding: 0 20px;
+      }
+
+      .stage-number {
+        font-size: 64px;
+        width: 90px;
+      }
+
+      .stage-item {
+        gap: 20px;
+      }
+
+      .contacts-grid {
+        gap: 48px;
+      }
+
+      .footer-top {
+        flex-direction: column;
+        gap: 28px;
+      }
     }
 
-    @media (max-width:1100px) {
-      .scroll-line { display:none; }
+    @media (max-width: 480px) {
+      .advantages-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .hero-buttons .btn {
+        width: 100%;
+        max-width: 300px;
+        justify-content: center;
+      }
+
+      .stage-number {
+        display: none;
+      }
+
+      .stage-item {
+        gap: 0;
+      }
     }
   </style>
 </head>
 <body>
 
-  <!-- Custom cursor -->
-  <div id="cursor"></div>
+  <!-- ── NAVIGATION ──────────────────────────────────── -->
+  <nav id="main-nav">
+    <div class="nav-inner">
+      <div class="nav-left">
+        <div class="logo-square"></div>
+        <div class="nav-brand">
+          <span class="nav-title">AXIS</span>
+          <span class="nav-phone">8 925 000-00-00</span>
+        </div>
+      </div>
 
-  <!-- NAV -->
-  <header class="nav" id="nav">
-    <div class="container nav-inner">
-      <a class="nav-logo" href="#hero">AX<span>I</span>S</a>
-      <nav>
+      <div class="nav-right">
         <ul class="nav-links">
-          <li><a href="#services">Услуги</a></li>
-          <li><a href="#process">Процесс</a></li>
-          <li><a href="#tariffs">Тарифы</a></li>
+          <li><a href="#advantages">Услуги</a></li>
+          <li><a href="#stages">Процесс</a></li>
+          <li><a href="#pricing">Тарифы</a></li>
           <li><a href="#contacts">Контакты</a></li>
         </ul>
-      </nav>
-      <a class="nav-cta" href="#contacts">Оставить заявку</a>
-      <button class="hamburger" id="hamburger" aria-label="Меню" aria-expanded="false">
-        <span></span><span></span><span></span>
+        <div class="nav-buttons">
+          <a href="#telegram" class="btn btn-primary">Оставить заявку</a>
+          <a href="#contacts" class="btn btn-ghost">Получить консультацию</a>
+        </div>
+      </div>
+
+      <button class="hamburger" id="hamburger" aria-label="Меню">
+        <span></span>
+        <span></span>
+        <span></span>
       </button>
     </div>
-    <div class="mobile-menu" id="mobileMenu">
-      <a href="#services">Услуги</a>
-      <a href="#process">Процесс</a>
-      <a href="#tariffs">Тарифы</a>
-      <a href="#contacts">Контакты</a>
+  </nav>
+
+  <!-- Mobile overlay -->
+  <div class="mobile-overlay" id="mobile-overlay">
+    <ul class="mobile-nav-links">
+      <li><a href="#advantages" class="mobile-link">Услуги</a></li>
+      <li><a href="#stages" class="mobile-link">Процесс</a></li>
+      <li><a href="#pricing" class="mobile-link">Тарифы</a></li>
+      <li><a href="#contacts" class="mobile-link">Контакты</a></li>
+    </ul>
+    <div class="mobile-buttons">
+      <a href="#telegram" class="btn btn-primary mobile-link">Оставить заявку</a>
+      <a href="#contacts" class="btn btn-ghost mobile-link">Получить консультацию</a>
     </div>
-  </header>
+  </div>
 
-  <main>
-
-    <!-- HERO -->
-    <section class="hero" id="hero">
-
-      <!-- left -->
-      <div class="hero-left">
-        <p class="eyebrow hero-eyebrow">Независимый контроль</p>
-
-        <h1 class="hero-heading">
-          <span class="line"><span>Контроль.</span></span>
-          <span class="line"><span>Сроки.</span></span>
-          <span class="line"><span>Бюджет.</span></span>
-        </h1>
-
-        <p class="hero-subtext">
-          Управляем ремонтом и строительством в ваших интересах.<br>
-          Пока вы занимаетесь своим делом.
-        </p>
-
-        <div class="hero-actions">
-          <a class="btn-primary" href="#contacts">Оставить заявку</a>
-          <a class="btn-ghost" href="#process">Как это работает <span class="arrow">→</span></a>
-        </div>
-
-        <!-- scroll indicator -->
-        <div class="scroll-line">
-          <span>Scroll</span>
-          <div class="scroll-line-bar"></div>
-        </div>
-      </div>
-
-      <!-- right — photo -->
-      <div class="hero-image-wrap">
-        <img
-          class="hero-img"
-          src="hero.webp"
-          alt="Архитектурный объект AXIS"
-          width="760"
-          height="1020"
-          loading="eager"
-          decoding="async"
-        >
-      </div>
-
-      <!-- stats -->
-      <div class="hero-stats">
-        <div class="container hero-stats-inner">
-          <div class="stat reveal"><div class="stat-num" data-count="87">0</div><div class="stat-label">объектов завершено</div></div>
-          <div class="stat reveal"><div class="stat-num" data-count-float="4.9">0</div><div class="stat-label">средняя оценка</div></div>
-          <div class="stat reveal"><div class="stat-num" data-count="0">0</div><div class="stat-label">просроченных сдач</div></div>
-          <div class="stat reveal"><p class="stat-num" style="font-size:clamp(28px,3.5vw,42px);padding-top:4px">от 3%</p><div class="stat-label">от бюджета объекта</div></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- MARQUEE -->
-    <div class="marquee-strip" aria-hidden="true">
-      <div class="marquee-track">
-        <!-- two copies for seamless loop -->
-        <span class="marquee-item">Технический надзор</span>
-        <span class="marquee-item">Контроль качества</span>
-        <span class="marquee-item">Управление бюджетом</span>
-        <span class="marquee-item">Удалённые отчёты</span>
-        <span class="marquee-item">Антикризис</span>
-        <span class="marquee-item">Защита интересов клиента</span>
-        <span class="marquee-item">Технический надзор</span>
-        <span class="marquee-item">Контроль качества</span>
-        <span class="marquee-item">Управление бюджетом</span>
-        <span class="marquee-item">Удалённые отчёты</span>
-        <span class="marquee-item">Антикризис</span>
-        <span class="marquee-item">Защита интересов клиента</span>
+  <!-- ── BLOCK I — HERO ───────────────────────────────── -->
+  <section id="hero">
+    <div class="hero-text-block">
+      <span class="hero-overline">Независимый контроль</span>
+      <h1 class="hero-heading">Управление строительными проектами</h1>
+      <p class="hero-subheading">Контроль бюджета, сроков и качества</p>
+      <div class="hero-buttons">
+        <a href="#telegram" class="btn btn-primary">Оставить заявку ↗</a>
+        <a href="#contacts" class="btn btn-ghost">Получить консультацию ↗</a>
       </div>
     </div>
+  </section>
 
-    <!-- PROBLEM -->
-    <section class="section" id="problem">
-      <div class="container">
-        <div class="sec-divider reveal">
-          <p class="eyebrow">Ситуация клиента</p>
-          <div class="sec-divider-line"></div>
-        </div>
-        <h2 class="display reveal">Вы <em>узнаёте</em><br>себя?</h2>
-        <div class="problem-grid" style="margin-top:56px">
-
-          <article class="panel panel-bad reveal">
-            <div class="panel-head">
-              <div class="panel-head-icon">✗</div>
-              Типичные проблемы
-            </div>
-            <ul class="panel-list">
-              <li><span class="li-mark">✗</span><span>Подрядчики срывают сроки и просят доплату</span></li>
-              <li><span class="li-mark">✗</span><span>Качество работ не соответствует смете</span></li>
-              <li><span class="li-mark">✗</span><span>Нет времени постоянно быть на объекте</span></li>
-              <li><span class="li-mark">✗</span><span>Непонятно за что платишь и куда ушли деньги</span></li>
-              <li><span class="li-mark">✗</span><span>Переделки после сдачи за свой счёт</span></li>
-            </ul>
-          </article>
-
-          <article class="panel panel-good reveal" style="--d:120ms">
-            <div class="panel-head">
-              <div class="panel-head-icon">✓</div>
-              Как мы решаем
-            </div>
-            <ul class="panel-list">
-              <li><span class="li-mark">✓</span><span>Жёсткий контроль сроков и графика работ</span></li>
-              <li><span class="li-mark">✓</span><span>Независимая проверка качества на каждом этапе</span></li>
-              <li><span class="li-mark">✓</span><span>Фото и видеоотчёты — вы видите всё удалённо</span></li>
-              <li><span class="li-mark">✓</span><span>Прозрачный бюджет и контроль каждой траты</span></li>
-              <li><span class="li-mark">✓</span><span>Представляем ваши интересы при приёмке</span></li>
-            </ul>
-          </article>
-
-        </div>
-      </div>
-    </section>
-
-    <!-- SERVICES -->
-    <section class="section" id="services">
-      <div class="container">
-        <div class="sec-divider reveal">
-          <p class="eyebrow">Что мы делаем</p>
-          <div class="sec-divider-line"></div>
-        </div>
-        <h2 class="display reveal">Услуги</h2>
-
-        <div class="services-grid">
-
-          <article class="service-card reveal">
-            <div class="service-icon">
-              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="2.5"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/></svg>
-            </div>
-            <div class="service-num">01</div>
-            <h3 class="service-title">Технический надзор</h3>
-            <p class="service-text">Контролируем работу ваших подрядчиков. Выезды на объект, фотофиксация, проверка соответствия смете и нормативам.</p>
-          </article>
-
-          <article class="service-card reveal" style="--d:100ms">
-            <div class="service-icon">
-              <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-            </div>
-            <div class="service-num">02</div>
-            <h3 class="service-title">Полное управление</h3>
-            <p class="service-text">Берём объект полностью: подбор подрядчиков, календарный план, контроль бюджета, отчётность и сопровождение сдачи.</p>
-          </article>
-
-          <article class="service-card reveal" style="--d:200ms">
-            <div class="service-icon">
-              <svg viewBox="0 0 24 24"><path d="M12 4l8 14H4L12 4z"/><line x1="12" y1="9" x2="12" y2="13"/><circle cx="12" cy="16" r=".5" fill="currentColor"/></svg>
-            </div>
-            <div class="service-num">03</div>
-            <h3 class="service-title">Антикризис</h3>
-            <p class="service-text">Подключаемся к проблемным объектам: срыв сроков, перерасход, конфликт с подрядчиками. Восстанавливаем управляемость.</p>
-          </article>
-
-          <article class="service-card reveal" style="--d:300ms">
-            <div class="service-icon">
-              <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="15" rx="1"/><polyline points="17 2 12 7 7 2"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/></svg>
-            </div>
-            <div class="service-num">04</div>
-            <h3 class="service-title">Удалённый контроль</h3>
-            <p class="service-text">Вы не обязаны быть на объекте. Фото/видеоотчёты, еженедельные сводки, коммуникация с подрядчиками от вашего имени.</p>
-          </article>
-
-        </div>
-      </div>
-    </section>
-
-    <!-- PROCESS -->
-    <section class="section" id="process">
-      <div class="container">
-        <div class="sec-divider reveal">
-          <p class="eyebrow">Порядок работы</p>
-          <div class="sec-divider-line"></div>
-        </div>
-        <h2 class="display reveal">Процесс</h2>
-        <p class="reveal" style="margin-top:20px;color:rgba(240,237,232,.42);font-size:15px;line-height:1.75;max-width:60ch;--d:120ms">
-          AXIS — не строительная компания. Мы управленческая сторона, которая защищает интересы клиента на каждом шаге.
-        </p>
-
-        <div class="process-list">
-          <article class="process-item reveal">
-            <div class="process-num">01</div>
-            <div class="process-body">
-              <h3 class="process-title">Заявка и аудит ситуации</h3>
-              <p class="process-text">Разбираем ваш объект, документы, подрядчиков и текущие риски. Формируем первичную картину.</p>
-            </div>
-          </article>
-          <article class="process-item reveal" style="--d:80ms">
-            <div class="process-num">02</div>
-            <div class="process-body">
-              <h3 class="process-title">Стратегия контроля</h3>
-              <p class="process-text">Формируем план сроков, бюджетные рамки, контрольные точки и формат отчётности.</p>
-            </div>
-          </article>
-          <article class="process-item reveal" style="--d:160ms">
-            <div class="process-num">03</div>
-            <div class="process-body">
-              <h3 class="process-title">Запуск сопровождения</h3>
-              <p class="process-text">Подключаемся к подрядчикам, фиксируем правила взаимодействия и зоны ответственности.</p>
-            </div>
-          </article>
-          <article class="process-item reveal" style="--d:240ms">
-            <div class="process-num">04</div>
-            <div class="process-body">
-              <h3 class="process-title">Еженедельный контроль</h3>
-              <p class="process-text">Выезды, фото/видео, проверка смет и сроков, согласование корректировок с вашей стороны.</p>
-            </div>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- TARIFFS -->
-    <section class="section" id="tariffs">
-      <div class="container">
-        <div class="sec-divider reveal">
-          <p class="eyebrow">Форматы сотрудничества</p>
-          <div class="sec-divider-line"></div>
-        </div>
-        <h2 class="display reveal">Тарифы</h2>
-
-        <div class="tariffs-grid">
-
-          <article class="tariff reveal">
-            <h3 class="tariff-name">Технадзор</h3>
-            <p class="tariff-price">Фиксированный платёж</p>
-            <ul class="tariff-list">
-              <li>Выезды на объект по графику</li>
-              <li>Проверка качества этапов</li>
-              <li>Фотоотчёты и замечания подрядчику</li>
-            </ul>
-            <a class="tariff-cta" href="#contacts">Запросить детали <span>→</span></a>
-          </article>
-
-          <article class="tariff featured reveal" style="--d:100ms">
-            <h3 class="tariff-name">Полное управление</h3>
-            <p class="tariff-price">Процент от бюджета</p>
-            <ul class="tariff-list">
-              <li>Контроль сроков, бюджета и качества</li>
-              <li>Коммуникация с подрядчиками</li>
-              <li>Полная отчётность и сопровождение сдачи</li>
-            </ul>
-            <a class="tariff-cta" href="#contacts">Запросить детали <span>→</span></a>
-          </article>
-
-          <article class="tariff reveal" style="--d:200ms">
-            <h3 class="tariff-name">Антикризис</h3>
-            <p class="tariff-price">Индивидуально</p>
-            <ul class="tariff-list">
-              <li>Экстренный аудит проблемного объекта</li>
-              <li>Фиксация ошибок и перерасхода</li>
-              <li>План стабилизации и возврата контроля</li>
-            </ul>
-            <a class="tariff-cta" href="#contacts">Запросить детали <span>→</span></a>
-          </article>
-
-        </div>
-      </div>
-    </section>
-
-    <!-- CONTACTS -->
-    <section class="section" id="contacts">
-      <div class="container">
-        <div class="sec-divider reveal">
-          <p class="eyebrow">Контакты</p>
-          <div class="sec-divider-line"></div>
-        </div>
-        <h2 class="display reveal">Оставьте<br><em>заявку</em></h2>
-
-        <div class="contacts-grid">
-
-          <div class="contacts-info reveal">
-            <div class="contacts-brand">AX<em>I</em>S</div>
-            <p class="contacts-copy">
-              Независимый контроль ремонта и строительства. Мы представляем ваши интересы — без подрядных работ и без конфликта интересов.
-            </p>
-            <ul class="contacts-checklist">
-              <li>Консультация по объекту и рискам</li>
-              <li>Прозрачный формат сопровождения</li>
-              <li>Удалённый контроль через фото/видео отчёты</li>
-            </ul>
-          </div>
-
-          <div class="contacts-form reveal" style="--d:120ms">
-            <form class="form" action="#" method="post">
-              <input class="field" type="text" placeholder="Имя" name="name" autocomplete="given-name">
-              <input class="field" type="tel" placeholder="+7 (___) ___-__-__" name="phone" required autocomplete="tel">
-              <select class="field" id="ptype" name="type">
-                <option value="" disabled selected>Тип проекта</option>
-                <option value="apartment">Ремонт квартиры</option>
-                <option value="house">Строительство дома</option>
-                <option value="tech">Технадзор</option>
-                <option value="crisis">Антикризис</option>
-              </select>
-              <textarea class="field" placeholder="Кратко опишите проект: тип объекта, площадь, стадия" name="message"></textarea>
-              <button class="form-submit" type="submit">Получить консультацию</button>
-            </form>
-            <p class="form-note">Свяжемся в течение 2 часов в рабочее время.</p>
-          </div>
-
-        </div>
-      </div>
-    </section>
-
-  </main>
-
-  <footer>
+  <!-- ── BLOCK II — ADVANTAGES ────────────────────────── -->
+  <section id="advantages">
     <div class="container">
+      <h2 class="section-title reveal">Почему выбирают нас</h2>
+      <div class="advantages-grid">
+
+        <div class="adv-card reveal">
+          <span class="adv-number">01</span>
+          <h3 class="adv-title">Экономия времени и нервов</h3>
+          <p class="adv-desc">Вы занимаетесь своим делом. Мы берём на себя всё взаимодействие с подрядчиками.</p>
+        </div>
+
+        <div class="adv-card reveal">
+          <span class="adv-number">02</span>
+          <h3 class="adv-title">Контроль бюджета</h3>
+          <p class="adv-desc">Фиксируем расходы и предотвращаем необдуманные траты. Прозрачная смета без скрытых платежей.</p>
+        </div>
+
+        <div class="adv-card reveal">
+          <span class="adv-number">03</span>
+          <h3 class="adv-title">Контроль сроков</h3>
+          <p class="adv-desc">Жёсткий контроль графика. Фото и видеоотчёты по каждому этапу в реальном времени.</p>
+        </div>
+
+        <div class="adv-card reveal">
+          <span class="adv-number">04</span>
+          <h3 class="adv-title">Контроль качества</h3>
+          <p class="adv-desc">Проверяем подрядчиков и материалы на каждом этапе. Независимая экспертиза в ваших интересах.</p>
+        </div>
+
+        <div class="adv-card reveal">
+          <span class="adv-number">05</span>
+          <h3 class="adv-title">Прозрачность работ</h3>
+          <p class="adv-desc">Вы видите всё что происходит на объекте. Еженедельные отчёты и онлайн-доступ к статусу.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── BLOCK III — STAGES ────────────────────────────── -->
+  <section id="stages">
+    <div class="container">
+      <h2 class="section-title reveal">Этапы работ</h2>
+      <ul class="stages-list">
+
+        <li class="stage-item reveal">
+          <span class="stage-number">01</span>
+          <div class="stage-content">
+            <h3 class="stage-title">Первичная консультация</h3>
+            <p class="stage-desc">Изучаем проект, задачи и бюджет.</p>
+          </div>
+        </li>
+
+        <li class="stage-item reveal">
+          <span class="stage-number">02</span>
+          <div class="stage-content">
+            <h3 class="stage-title">Анализ и смета</h3>
+            <p class="stage-desc">Проверяем смету, выявляем риски переплат.</p>
+          </div>
+        </li>
+
+        <li class="stage-item reveal">
+          <span class="stage-number">03</span>
+          <div class="stage-content">
+            <h3 class="stage-title">Подбор подрядчиков</h3>
+            <p class="stage-desc">Находим и проверяем исполнителей.</p>
+          </div>
+        </li>
+
+        <li class="stage-item reveal">
+          <span class="stage-number">04</span>
+          <div class="stage-content">
+            <h3 class="stage-title">Контроль хода работ</h3>
+            <p class="stage-desc">Выезды, фотоотчёты, еженедельные сводки.</p>
+          </div>
+        </li>
+
+        <li class="stage-item reveal">
+          <span class="stage-number">05</span>
+          <div class="stage-content">
+            <h3 class="stage-title">Контроль качества</h3>
+            <p class="stage-desc">Независимая проверка на каждом этапе.</p>
+          </div>
+        </li>
+
+        <li class="stage-item reveal">
+          <span class="stage-number">06</span>
+          <div class="stage-content">
+            <h3 class="stage-title">Контроль бюджета</h3>
+            <p class="stage-desc">Фиксируем расходы, согласуем каждую трату.</p>
+          </div>
+        </li>
+
+        <li class="stage-item reveal">
+          <span class="stage-number">07</span>
+          <div class="stage-content">
+            <h3 class="stage-title">Приёмка объекта</h3>
+            <p class="stage-desc">Представляем ваши интересы при финальной сдаче.</p>
+          </div>
+        </li>
+
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── BLOCK IV — PRICING ─────────────────────────────── -->
+  <section id="pricing">
+    <div class="container">
+      <h2 class="section-title reveal">Тарифы</h2>
+      <div class="pricing-grid">
+
+        <div class="price-card reveal">
+          <h3 class="price-name">Технический надзор</h3>
+          <p class="price-label">Фиксированная стоимость</p>
+          <ul class="price-list">
+            <li>Выезды на объект</li>
+            <li>Фотоотчёты</li>
+            <li>Контроль качества</li>
+            <li>Рекомендации</li>
+          </ul>
+          <a href="#telegram" class="btn btn-ghost">Оставить заявку</a>
+        </div>
+
+        <div class="price-card featured reveal">
+          <span class="price-badge">ПОПУЛЯРНЫЙ</span>
+          <h3 class="price-name">Полное управление</h3>
+          <p class="price-label">% от бюджета объекта</p>
+          <ul class="price-list">
+            <li>Календарный план</li>
+            <li>Контроль бюджета</li>
+            <li>Подбор подрядчиков</li>
+            <li>Отчётность</li>
+            <li>Приёмка</li>
+            <li>Персональный менеджер</li>
+          </ul>
+          <a href="#telegram" class="btn btn-cream">Оставить заявку</a>
+        </div>
+
+        <div class="price-card reveal">
+          <h3 class="price-name">Антикризис</h3>
+          <p class="price-label">Повышенный тариф</p>
+          <ul class="price-list">
+            <li>Аудит ситуации</li>
+            <li>Выявление нарушений</li>
+            <li>Переговоры</li>
+            <li>Восстановление контроля</li>
+            <li>Новый план</li>
+          </ul>
+          <a href="#telegram" class="btn btn-ghost">Оставить заявку</a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── BLOCK V — TELEGRAM ─────────────────────────────── -->
+  <section id="telegram">
+    <div class="container" style="text-align: center;">
+      <h2 class="section-title reveal">Получите первичный анализ</h2>
+      <p class="tg-subtitle reveal">Ответьте на несколько вопросов и получите рекомендации</p>
+      <div class="reveal">
+        <a href="https://t.me/axis_control" class="btn btn-primary" target="_blank" rel="noopener">↗ Написать в Telegram</a>
+      </div>
+      <p class="tg-note reveal">Отвечаем в течение 2 часов</p>
+    </div>
+  </section>
+
+  <!-- ── BLOCK VI — CONTACTS + CASES ───────────────────── -->
+  <section id="contacts">
+    <div class="container">
+      <div class="contacts-grid">
+
+        <!-- Contacts column -->
+        <div>
+          <h2 class="contacts-title reveal">Контакты</h2>
+
+          <div class="contact-row reveal">
+            <svg class="contact-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 5a2 2 0 012-2h2.28a1 1 0 01.95.68l1.1 3.3a1 1 0 01-.23 1.02L7.91 9.2a12.05 12.05 0 005.9 5.9l1.2-1.2a1 1 0 011.01-.24l3.3 1.1a1 1 0 01.68.95V17a2 2 0 01-2 2C7.16 19 1 12.84 1 5.5A2.5 2.5 0 013 3v2z"/>
+            </svg>
+            <a href="tel:89250000000" class="contact-text">8 925 000-00-00</a>
+          </div>
+
+          <div class="contact-row reveal">
+            <svg class="contact-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="4" width="16" height="12" rx="2"/>
+              <path d="M2 7l8 5 8-5"/>
+            </svg>
+            <a href="mailto:info@axis-control.ru" class="contact-text">info@axis-control.ru</a>
+          </div>
+
+          <div class="contact-row reveal">
+            <svg class="contact-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17.5 3L1.5 9l6 2.5L10 17.5 17.5 3z"/>
+              <path d="M7.5 11.5l4-4"/>
+            </svg>
+            <a href="https://t.me/axis_control" class="contact-text" target="_blank" rel="noopener">@axis_control</a>
+          </div>
+        </div>
+
+        <!-- Cases column -->
+        <div>
+          <h2 class="cases-title reveal">Опыт работы</h2>
+          <div class="cases-list">
+            <div class="case-card reveal">
+              <p>Кейс 1 — В разработке</p>
+            </div>
+            <div class="case-card reveal">
+              <p>Кейс 2 — В разработке</p>
+            </div>
+            <div class="case-card reveal">
+              <p>Кейс 3 — В разработке</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ──────────────────────────────────────────── -->
+  <footer>
+    <div class="footer-inner">
       <div class="footer-top">
-        <div>
-          <div class="footer-logo">AX<span>I</span>S</div>
-          <p class="footer-tag">Независимый контроль ремонта и строительства. Работаем в ваших интересах.</p>
+        <div class="footer-brand">
+          <span class="footer-logo">AXIS</span>
+          <span class="footer-tagline">Управление строительными проектами</span>
         </div>
-        <div>
-          <p class="footer-col-title">Навигация</p>
-          <ul class="footer-links">
-            <li><a href="#services">Услуги</a></li>
-            <li><a href="#process">Процесс</a></li>
-            <li><a href="#tariffs">Тарифы</a></li>
-            <li><a href="#contacts">Контакты</a></li>
-          </ul>
-        </div>
-        <div>
-          <p class="footer-col-title">Услуги</p>
-          <ul class="footer-links">
-            <li><a href="#services">Технический надзор</a></li>
-            <li><a href="#services">Полное управление</a></li>
-            <li><a href="#services">Антикризис</a></li>
-            <li><a href="#services">Удалённый контроль</a></li>
-          </ul>
-        </div>
+        <ul class="footer-links">
+          <li><a href="#advantages">Услуги</a></li>
+          <li><a href="#stages">Процесс</a></li>
+          <li><a href="#pricing">Тарифы</a></li>
+          <li><a href="#contacts">Контакты</a></li>
+        </ul>
       </div>
       <div class="footer-bottom">
-        <span>© 2026 AXIS — Независимое управление и технадзор</span>
-        <span>Защита ваших интересов на каждом этапе</span>
+        <p class="footer-copy">© 2025 AXIS. Все права защищены.</p>
       </div>
     </div>
   </footer>
 
+  <!-- ── JAVASCRIPT ──────────────────────────────────────── -->
   <script>
-    /* ── Cursor ─────────────────────────────────────── */
-    const cursor = document.getElementById('cursor');
-    let mx = -100, my = -100;
-    document.addEventListener('mousemove', e => {
-      mx = e.clientX; my = e.clientY;
-      cursor.style.left = mx + 'px';
-      cursor.style.top  = my + 'px';
-    });
-    document.querySelectorAll('a, button, .service-card, .tariff, .panel').forEach(el => {
-      el.addEventListener('mouseenter', () => cursor.classList.add('grow'));
-      el.addEventListener('mouseleave', () => cursor.classList.remove('grow'));
-    });
+    // Nav scroll shadow
+    const nav = document.getElementById('main-nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 10);
+    }, { passive: true });
 
-    /* ── Hero load animation ────────────────────────── */
-    window.addEventListener('load', () => {
-      document.querySelector('.hero').classList.add('loaded');
-    });
-
-    /* ── Nav scroll ─────────────────────────────────── */
-    const nav = document.getElementById('nav');
-    const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 24);
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive:true });
-
-    /* ── Mobile menu ────────────────────────────────── */
+    // Hamburger menu
     const hamburger = document.getElementById('hamburger');
-    const mobileMenu = document.getElementById('mobileMenu');
-    hamburger.addEventListener('click', () => {
-      const open = nav.classList.toggle('open');
-      hamburger.setAttribute('aria-expanded', open);
-      document.body.style.overflow = open ? 'hidden' : '';
-    });
-    mobileMenu.querySelectorAll('a').forEach(a => {
-      a.addEventListener('click', () => {
-        nav.classList.remove('open');
-        hamburger.setAttribute('aria-expanded', 'false');
-        document.body.style.overflow = '';
-      });
-    });
+    const overlay = document.getElementById('mobile-overlay');
 
-    /* ── Smooth anchor scroll ───────────────────────── */
-    document.querySelectorAll('a[href^="#"]').forEach(a => {
-      a.addEventListener('click', e => {
-        const id = a.getAttribute('href');
-        if (!id || id === '#') return;
-        const el = document.querySelector(id);
-        if (!el) return;
-        e.preventDefault();
-        const top = el.getBoundingClientRect().top + window.pageYOffset - nav.offsetHeight + 2;
-        window.scrollTo({ top, behavior: 'smooth' });
-      });
-    });
-
-    /* ── Reveal on scroll ───────────────────────────── */
-    const revealEls = document.querySelectorAll('.reveal');
-    const io = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('in');
-          io.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
-    revealEls.forEach((el, i) => {
-      if (!el.style.getPropertyValue('--d')) el.style.setProperty('--d', (i % 8 * 60) + 'ms');
-      io.observe(el);
-    });
-
-    /* ── Counter animation ──────────────────────────── */
-    function animateCount(el, target, isFloat = false) {
-      const duration = 1600;
-      const start = performance.now();
-      const tick = (now) => {
-        const p = Math.min((now - start) / duration, 1);
-        const ease = 1 - Math.pow(1 - p, 3);
-        const val = ease * target;
-        el.textContent = isFloat ? val.toFixed(1) : Math.round(val);
-        if (p < 1) requestAnimationFrame(tick);
-      };
-      requestAnimationFrame(tick);
+    function closeMobileMenu() {
+      hamburger.classList.remove('open');
+      overlay.classList.remove('open');
+      document.body.style.overflow = '';
     }
 
-    const countObserver = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (!entry.isIntersecting) return;
-        const el = entry.target;
-        const v = el.dataset.count;
-        const vf = el.dataset.countFloat;
-        if (v !== undefined) animateCount(el, +v, false);
-        if (vf !== undefined) animateCount(el, +vf, true);
-        countObserver.unobserve(el);
-      });
-    }, { threshold: 0.5 });
-    document.querySelectorAll('[data-count],[data-count-float]').forEach(el => countObserver.observe(el));
-
-    /* ── Select color fix ───────────────────────────── */
-    document.getElementById('ptype').addEventListener('change', function() {
-      this.classList.add('sel');
+    hamburger.addEventListener('click', () => {
+      const isOpen = overlay.classList.contains('open');
+      if (isOpen) {
+        closeMobileMenu();
+      } else {
+        hamburger.classList.add('open');
+        overlay.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      }
     });
+
+    document.querySelectorAll('.mobile-link').forEach(link => {
+      link.addEventListener('click', closeMobileMenu);
+    });
+
+    // IntersectionObserver scroll animations
+    const revealEls = document.querySelectorAll('.reveal');
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          // Find siblings in same parent and stagger
+          const parent = entry.target.parentElement;
+          const siblings = Array.from(parent.querySelectorAll(':scope > .reveal'));
+          const idx = siblings.indexOf(entry.target);
+          const delay = idx >= 0 ? idx * 0.08 : 0;
+
+          entry.target.style.transitionDelay = delay + 's';
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.12,
+      rootMargin: '0px 0px -40px 0px'
+    });
+
+    revealEls.forEach(el => observer.observe(el));
   </script>
+
 </body>
 </html>
