@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AXIS — Управление строительными проектами</title>
-  <meta name="description" content="AXIS — независимый контроль строительных проектов. Контроль бюджета, сроков и качества.">
+  <title>Точка контроля — Управление строительными проектами</title>
+  <meta name="description" content="Точка контроля — независимый контроль строительных проектов. Контроль бюджета, сроков и качества.">
   <link rel="preload" as="image" href="hero.jpeg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,458 +19,468 @@
       font-family: 'Poiret One', cursive;
     }
 
-    html {
-      scroll-behavior: smooth;
-    }
+    html { scroll-behavior: smooth; }
 
     body {
       background: #E8E4D9;
-      color: #1F3028;
+      color: #1A1A1A;
       overflow-x: hidden;
     }
 
     /* ── NAVIGATION ───────────────────────────────────── */
     nav {
       position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
+      top: 0; left: 0; right: 0;
       z-index: 1000;
       background: #E8E4D9;
-      border-bottom: 1px solid rgba(31, 48, 40, 0.1);
+      border-bottom: 1px solid rgba(26,26,26,0.1);
+      height: 64px;
+      display: flex;
+      align-items: center;
+      padding: 0 60px;
       transition: box-shadow 0.3s ease;
     }
 
     nav.scrolled {
-      box-shadow: 0 1px 20px rgba(31, 48, 40, 0.08);
+      box-shadow: 0 1px 0 rgba(0,0,0,0.12);
     }
 
     .nav-inner {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 0 40px;
-      height: 68px;
+      width: 100%;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 32px;
     }
 
     .nav-left {
       display: flex;
       align-items: center;
       gap: 16px;
+    }
+
+    .logo-sq {
+      width: 32px; height: 32px;
+      border: 1px solid #1A1A1A;
       flex-shrink: 0;
     }
 
-    .logo-square {
-      width: 36px;
-      height: 36px;
-      border: 1px solid #1F3028;
-      flex-shrink: 0;
-    }
-
-    .nav-brand {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .nav-title {
-      font-size: 22px;
-      color: #1F3028;
+    .nav-name {
+      font-size: 20px;
+      color: #1A1A1A;
       letter-spacing: 0.2em;
       line-height: 1;
     }
 
     .nav-phone {
       font-size: 13px;
-      color: #5C6B5E;
-      line-height: 1;
+      color: #6B6B5E;
     }
 
     .nav-right {
       display: flex;
       align-items: center;
-      gap: 28px;
+      gap: 32px;
     }
 
     .nav-links {
       display: flex;
       align-items: center;
-      gap: 24px;
+      gap: 28px;
       list-style: none;
     }
 
     .nav-links a {
       font-size: 13px;
-      color: #1F3028;
+      color: #1A1A1A;
       text-decoration: none;
-      letter-spacing: 0.04em;
-      transition: color 0.2s;
+      letter-spacing: 0.03em;
+      transition: opacity 0.2s;
     }
 
-    .nav-links a:hover {
-      color: #2A3F32;
-    }
+    .nav-links a:hover { opacity: 0.55; }
 
-    .nav-buttons {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-shrink: 0;
-    }
-
-    .btn {
+    .btn-nav {
       font-size: 13px;
-      border-radius: 100px;
-      padding: 10px 24px;
+      color: #1A1A1A;
+      border: 1px solid #1A1A1A;
+      background: transparent;
+      padding: 9px 20px;
       cursor: pointer;
       text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: background 0.2s, color 0.2s, border-color 0.2s;
-      line-height: 1;
-      border: 1px solid transparent;
+      display: inline-block;
+      letter-spacing: 0.03em;
+      transition: background 0.2s, color 0.2s;
+      white-space: nowrap;
     }
 
-    .btn-primary {
-      background: #1F3028;
+    .btn-nav:hover {
+      background: #1A1A1A;
       color: #E8E4D9;
-      border-color: #1F3028;
     }
 
-    .btn-primary:hover {
-      background: #2A3F32;
-      border-color: #2A3F32;
-    }
-
-    .btn-ghost {
-      background: transparent;
-      color: #1F3028;
-      border-color: #1F3028;
-    }
-
-    .btn-ghost:hover {
-      background: rgba(31, 48, 40, 0.06);
-    }
-
+    /* Hamburger */
     .hamburger {
       display: none;
       flex-direction: column;
       gap: 5px;
       cursor: pointer;
-      padding: 4px;
       background: none;
       border: none;
+      padding: 4px;
     }
 
     .hamburger span {
       display: block;
-      width: 24px;
+      width: 22px;
       height: 1.5px;
-      background: #1F3028;
+      background: #1A1A1A;
       transition: transform 0.3s, opacity 0.3s;
     }
 
-    .hamburger.open span:nth-child(1) {
-      transform: translateY(6.5px) rotate(45deg);
-    }
+    .hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
 
-    .hamburger.open span:nth-child(2) {
-      opacity: 0;
-    }
-
-    .hamburger.open span:nth-child(3) {
-      transform: translateY(-6.5px) rotate(-45deg);
-    }
-
-    /* Mobile menu overlay */
     .mobile-overlay {
       display: none;
       position: fixed;
-      inset: 68px 0 0 0;
+      inset: 64px 0 0 0;
       background: #E8E4D9;
       z-index: 999;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 32px;
-      border-top: 1px solid rgba(31, 48, 40, 0.1);
+      gap: 28px;
+      border-top: 1px solid rgba(26,26,26,0.1);
     }
 
-    .mobile-overlay.open {
-      display: flex;
-    }
+    .mobile-overlay.open { display: flex; }
 
     .mobile-nav-links {
       list-style: none;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 24px;
+      gap: 20px;
     }
 
     .mobile-nav-links a {
-      font-size: 22px;
-      color: #1F3028;
+      font-size: 24px;
+      color: #1A1A1A;
       text-decoration: none;
       letter-spacing: 0.08em;
     }
 
-    .mobile-buttons {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      align-items: center;
-    }
-
     /* ── HERO ─────────────────────────────────────────── */
     #hero {
+      position: relative;
       height: 100vh;
-      min-height: 600px;
-      background-image: url('hero.jpg');
+      min-height: 640px;
+      background-image: url('hero.jpeg');
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
       display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 80px 24px 0;
+      align-items: flex-end;
+      padding: 0 0 80px 60px;
     }
 
-    .hero-text-block {
-      background: rgba(232, 228, 217, 0.72);
-      backdrop-filter: blur(2px);
-      -webkit-backdrop-filter: blur(2px);
-      padding: 40px 60px;
-      display: inline-block;
-      max-width: 900px;
+    .hero-card {
+      background: rgba(232,228,217,0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 40px 48px;
+      max-width: 520px;
+      border-top: 2px solid #1A1A1A;
+      position: relative;
+      z-index: 2;
     }
 
-    .hero-overline {
-      font-size: 11px;
-      color: #5C6B5E;
+    .hero-label {
+      font-size: 10px;
+      color: #6B6B5E;
       letter-spacing: 0.25em;
       text-transform: uppercase;
-      margin-bottom: 16px;
       display: block;
+      margin-bottom: 20px;
     }
 
     .hero-heading {
-      font-size: clamp(36px, 6vw, 80px);
-      color: #1F3028;
-      line-height: 1.05;
-      letter-spacing: 0.03em;
+      font-size: clamp(32px, 4vw, 52px);
+      color: #1A1A1A;
+      line-height: 1.1;
+      margin-bottom: 16px;
+      letter-spacing: 0.02em;
     }
 
-    .hero-subheading {
-      font-size: clamp(16px, 2.5vw, 24px);
-      color: #5C6B5E;
-      margin-top: 16px;
+    .hero-sub {
+      font-size: 16px;
+      color: #6B6B5E;
     }
 
     .hero-buttons {
-      margin-top: 36px;
       display: flex;
-      gap: 14px;
-      justify-content: center;
+      gap: 16px;
+      margin-top: 32px;
       flex-wrap: wrap;
     }
 
-    .hero-buttons .btn {
+    .btn-primary {
+      background: #1A1A1A;
+      color: #E8E4D9;
+      padding: 14px 28px;
       font-size: 15px;
-      padding: 16px 36px;
+      text-decoration: none;
+      display: inline-block;
+      transition: opacity 0.2s;
+      border: 1px solid #1A1A1A;
+      cursor: pointer;
+      letter-spacing: 0.03em;
     }
 
-    /* ── SECTION BASE ─────────────────────────────────── */
-    section {
-      padding: 100px 0;
+    .btn-primary:hover { opacity: 0.8; }
+
+    .btn-ghost-dark {
+      background: transparent;
+      color: #1A1A1A;
+      border: 1px solid #1A1A1A;
+      padding: 14px 28px;
+      font-size: 15px;
+      text-decoration: none;
+      display: inline-block;
+      transition: background 0.2s, color 0.2s;
+      cursor: pointer;
+      letter-spacing: 0.03em;
     }
 
-    .container {
-      max-width: 1400px;
-      margin: 0 auto;
+    .btn-ghost-dark:hover {
+      background: #1A1A1A;
+      color: #E8E4D9;
+    }
+
+    /* Hero stats bar */
+    .hero-stats {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      background: rgba(24,24,24,0.9);
+      padding: 20px 60px;
+      display: flex;
+      align-items: center;
+      z-index: 3;
+    }
+
+    .stat-item {
+      flex: 1;
       padding: 0 40px;
+      border-right: 1px solid rgba(255,255,255,0.12);
     }
 
-    .section-title {
-      font-size: 48px;
-      color: #1F3028;
-      text-align: center;
-      letter-spacing: 0.06em;
-      margin-bottom: 64px;
-    }
+    .stat-item:first-child { padding-left: 0; }
+    .stat-item:last-child { border-right: none; }
 
-    /* ── BLOCK II — ADVANTAGES ────────────────────────── */
-    #advantages {
-      background: #E8E4D9;
-    }
-
-    .advantages-grid {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 20px;
-    }
-
-    .adv-card {
-      background: #F0EDE6;
-      border: 1px solid rgba(31, 48, 40, 0.1);
-      padding: 36px 28px;
-      border-radius: 4px;
-      transition: border-color 0.25s;
-    }
-
-    .adv-card:hover {
-      border-color: rgba(31, 48, 40, 0.35);
-    }
-
-    .adv-number {
-      font-size: 64px;
-      color: rgba(31, 48, 40, 0.08);
+    .stat-number {
+      font-size: 38px;
+      color: #F0EDE6;
       line-height: 1;
       display: block;
     }
 
+    .stat-label {
+      font-size: 11px;
+      color: rgba(240,237,230,0.5);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-top: 4px;
+      display: block;
+    }
+
+    /* ── SECTION COMMONS ──────────────────────────────── */
+    .section-label {
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-size: 52px;
+      letter-spacing: 0.03em;
+      line-height: 1.05;
+      margin-bottom: 60px;
+    }
+
+    /* ── ADVANTAGES ───────────────────────────────────── */
+    #advantages {
+      background: #E8E4D9;
+      padding: 100px 60px;
+    }
+
+    #advantages .section-label { color: #6B6B5E; }
+    #advantages .section-title { color: #1A1A1A; }
+
+    .adv-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1px;
+      background: rgba(26,26,26,0.08);
+    }
+
+    .adv-card {
+      background: #F5F2EB;
+      padding: 36px 32px;
+      border-top: 2px solid #1A1A1A;
+      transition: background 0.2s;
+    }
+
+    .adv-card:hover { background: #EDEAE2; }
+
+    .adv-num {
+      font-size: 48px;
+      color: rgba(26,26,26,0.07);
+      display: block;
+      line-height: 1;
+    }
+
     .adv-title {
       font-size: 18px;
-      color: #1F3028;
-      margin-top: -20px;
+      color: #1A1A1A;
+      margin-top: -8px;
       position: relative;
       line-height: 1.3;
     }
 
-    .adv-desc {
+    .adv-text {
       font-size: 14px;
-      color: #5C6B5E;
+      color: #6B6B5E;
       line-height: 1.75;
       margin-top: 12px;
     }
 
-    /* ── BLOCK III — STAGES ───────────────────────────── */
-    #stages {
-      background: #DEDAD0;
+    .adv-link {
+      font-size: 13px;
+      color: #1A1A1A;
+      display: block;
+      margin-top: 24px;
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      transition: opacity 0.2s;
     }
 
-    .stages-list {
-      list-style: none;
+    .adv-link:hover { opacity: 0.55; }
+
+    /* ── STAGES ───────────────────────────────────────── */
+    #stages {
+      background: #181818;
+      padding: 100px 60px;
     }
+
+    #stages .section-label { color: rgba(240,237,230,0.4); }
+    #stages .section-title { color: #F0EDE6; }
+
+    .stages-list { list-style: none; }
 
     .stage-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 40px;
-      padding: 40px 0;
-      border-bottom: 1px solid rgba(31, 48, 40, 0.1);
+      display: grid;
+      grid-template-columns: 80px 1fr 1fr;
+      align-items: start;
+      padding: 32px 0;
+      border-bottom: 1px solid rgba(240,237,230,0.08);
+      gap: 24px;
     }
 
-    .stage-item:first-child {
-      border-top: 1px solid rgba(31, 48, 40, 0.1);
-    }
+    .stage-item:last-child { border-bottom: none; }
 
-    .stage-number {
-      font-size: 96px;
-      color: rgba(31, 48, 40, 0.07);
-      line-height: 0.85;
-      flex-shrink: 0;
-      width: 140px;
-      text-align: right;
-    }
-
-    .stage-content {
-      padding-top: 8px;
-      flex: 1;
+    .stage-num {
+      font-size: 13px;
+      color: rgba(240,237,230,0.35);
+      padding-top: 4px;
+      letter-spacing: 0.05em;
     }
 
     .stage-title {
-      font-size: 22px;
-      color: #1F3028;
-      letter-spacing: 0.03em;
+      font-size: 20px;
+      color: #F0EDE6;
+      line-height: 1.3;
     }
 
     .stage-desc {
-      font-size: 15px;
-      color: #5C6B5E;
+      font-size: 14px;
+      color: rgba(240,237,230,0.5);
       line-height: 1.7;
-      margin-top: 10px;
+      text-align: right;
     }
 
-    /* ── BLOCK IV — PRICING ───────────────────────────── */
+    /* ── PRICING ──────────────────────────────────────── */
     #pricing {
       background: #E8E4D9;
+      padding: 100px 60px;
     }
+
+    #pricing .section-label { color: #6B6B5E; }
+    #pricing .section-title { color: #1A1A1A; }
 
     .pricing-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-      align-items: start;
+      gap: 2px;
+      background: rgba(26,26,26,0.08);
     }
 
     .price-card {
-      background: #F0EDE6;
-      border: 1px solid rgba(31, 48, 40, 0.12);
-      border-radius: 4px;
-      padding: 40px;
+      background: #F5F2EB;
+      padding: 40px 36px;
+      border-top: 2px solid rgba(26,26,26,0.2);
       display: flex;
       flex-direction: column;
-      gap: 0;
     }
 
     .price-card.featured {
-      background: #1F3028;
-      border-color: #1F3028;
+      background: #1A1A1A;
+      border-top-color: #F0EDE6;
     }
 
     .price-badge {
-      display: inline-block;
-      background: #E8E4D9;
-      color: #1F3028;
       font-size: 10px;
-      letter-spacing: 0.12em;
-      padding: 4px 12px;
-      border-radius: 100px;
-      margin-bottom: 20px;
+      background: #F0EDE6;
+      color: #1A1A1A;
+      letter-spacing: 0.15em;
+      padding: 4px 10px;
+      display: inline-block;
+      margin-bottom: 16px;
       align-self: flex-start;
     }
 
     .price-name {
-      font-size: 22px;
-      color: #1F3028;
-      letter-spacing: 0.04em;
-      margin-bottom: 10px;
+      font-size: 26px;
+      color: #1A1A1A;
+      letter-spacing: 0.03em;
     }
 
-    .price-card.featured .price-name {
-      color: #E8E4D9;
-    }
+    .price-card.featured .price-name { color: #F0EDE6; }
 
-    .price-label {
-      font-size: 13px;
-      color: #5C6B5E;
+    .price-sub {
+      font-size: 15px;
+      color: #6B6B5E;
+      margin-top: 8px;
       margin-bottom: 28px;
     }
 
-    .price-card.featured .price-label {
-      color: rgba(232, 228, 217, 0.6);
-    }
+    .price-card.featured .price-sub { color: rgba(240,237,230,0.5); }
 
     .price-list {
       list-style: none;
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      margin-bottom: 36px;
+      gap: 10px;
       flex: 1;
     }
 
     .price-list li {
       font-size: 14px;
-      color: #5C6B5E;
-      line-height: 1.5;
-      padding-left: 16px;
+      color: #6B6B5E;
+      line-height: 1.8;
+      padding-left: 18px;
       position: relative;
     }
 
@@ -478,62 +488,89 @@
       content: '—';
       position: absolute;
       left: 0;
-      color: rgba(31, 48, 40, 0.3);
+      color: rgba(26,26,26,0.25);
     }
 
-    .price-card.featured .price-list li {
-      color: rgba(232, 228, 217, 0.75);
-    }
+    .price-card.featured .price-list li { color: rgba(240,237,230,0.6); }
+    .price-card.featured .price-list li::before { color: rgba(240,237,230,0.2); }
 
-    .price-card.featured .price-list li::before {
-      color: rgba(232, 228, 217, 0.3);
-    }
-
-    .price-card .btn {
-      align-self: stretch;
-      justify-content: center;
+    .price-btn {
+      margin-top: 32px;
       font-size: 14px;
-      padding: 14px 24px;
-    }
-
-    .btn-cream {
-      background: #E8E4D9;
-      color: #1F3028;
-      border-color: #E8E4D9;
-    }
-
-    .btn-cream:hover {
-      background: #DEDAD0;
-      border-color: #DEDAD0;
-    }
-
-    /* ── BLOCK V — TELEGRAM ───────────────────────────── */
-    #telegram {
-      background: #DEDAD0;
+      padding: 12px 24px;
+      text-decoration: none;
+      display: inline-block;
+      cursor: pointer;
+      letter-spacing: 0.03em;
       text-align: center;
+      border: 1px solid #1A1A1A;
+      background: transparent;
+      color: #1A1A1A;
+      transition: background 0.2s, color 0.2s;
     }
 
-    .tg-subtitle {
+    .price-btn:hover {
+      background: #1A1A1A;
+      color: #E8E4D9;
+    }
+
+    .price-card.featured .price-btn {
+      background: #F0EDE6;
+      color: #1A1A1A;
+      border: none;
+    }
+
+    .price-card.featured .price-btn:hover {
+      background: #E8E4D9;
+    }
+
+    /* ── TELEGRAM ─────────────────────────────────────── */
+    #telegram {
+      background: #1A1A1A;
+      padding: 80px 60px;
+    }
+
+    .tg-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+
+    .tg-left {}
+
+    .tg-heading {
+      font-size: 36px;
+      color: #F0EDE6;
+      letter-spacing: 0.03em;
+      line-height: 1.1;
+    }
+
+    .tg-sub {
+      font-size: 15px;
+      color: rgba(240,237,230,0.5);
+      margin-top: 8px;
+    }
+
+    .btn-tg {
+      background: #F0EDE6;
+      color: #1A1A1A;
       font-size: 16px;
-      color: #5C6B5E;
-      margin-bottom: 40px;
-      margin-top: 16px;
+      padding: 16px 36px;
+      text-decoration: none;
+      display: inline-block;
+      transition: opacity 0.2s;
+      white-space: nowrap;
+      letter-spacing: 0.03em;
     }
 
-    .tg-note {
-      font-size: 13px;
-      color: #5C6B5E;
-      margin-top: 20px;
-    }
+    .btn-tg:hover { opacity: 0.85; }
 
-    #telegram .btn {
-      font-size: 18px;
-      padding: 20px 60px;
-    }
-
-    /* ── BLOCK VI — CONTACTS + CASES ─────────────────── */
+    /* ── CONTACTS ─────────────────────────────────────── */
     #contacts {
       background: #E8E4D9;
+      padding: 100px 60px;
     }
 
     .contacts-grid {
@@ -542,128 +579,116 @@
       gap: 80px;
     }
 
-    .contacts-title,
-    .cases-title {
-      font-size: 36px;
-      color: #1F3028;
-      letter-spacing: 0.05em;
-      margin-bottom: 36px;
+    #contacts .section-label { color: #6B6B5E; }
+
+    .contacts-title {
+      font-size: 52px;
+      color: #1A1A1A;
+      letter-spacing: 0.03em;
+      margin-bottom: 40px;
+      line-height: 1.05;
     }
 
     .contact-row {
       display: flex;
       align-items: center;
       gap: 16px;
-      padding: 18px 0;
-      border-bottom: 1px solid rgba(31, 48, 40, 0.1);
+      padding: 20px 0;
+      border-bottom: 1px solid rgba(26,26,26,0.1);
     }
 
-    .contact-row:first-of-type {
-      border-top: 1px solid rgba(31, 48, 40, 0.1);
-    }
+    .contact-row:first-of-type { border-top: 1px solid rgba(26,26,26,0.1); }
 
-    .contact-icon {
-      width: 20px;
-      height: 20px;
+    .contact-row-label {
+      font-size: 11px;
+      color: #6B6B5E;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      width: 100px;
       flex-shrink: 0;
-      color: #1F3028;
     }
 
-    .contact-text {
+    .contact-row-value {
       font-size: 16px;
-      color: #1F3028;
+      color: #1A1A1A;
       text-decoration: none;
+      transition: opacity 0.2s;
     }
 
-    .contact-text:hover {
-      color: #2A3F32;
+    .contact-row-value:hover { opacity: 0.6; }
+
+    .cases-title {
+      font-size: 36px;
+      color: #1A1A1A;
+      letter-spacing: 0.03em;
+      margin-bottom: 32px;
     }
 
     .cases-list {
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 2px;
+      background: rgba(26,26,26,0.06);
     }
 
     .case-card {
-      background: #F0EDE6;
-      border: 1px solid rgba(31, 48, 40, 0.12);
+      background: #F5F2EB;
+      border-top: 2px solid rgba(26,26,26,0.15);
       padding: 28px;
-      border-radius: 4px;
-    }
-
-    .case-card p {
-      font-size: 14px;
-      color: #5C6B5E;
+      font-size: 15px;
+      color: #6B6B5E;
     }
 
     /* ── FOOTER ───────────────────────────────────────── */
     footer {
-      background: #1F3028;
-      padding: 60px 0 40px;
-    }
-
-    .footer-inner {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 0 40px;
-    }
-
-    .footer-top {
+      background: #111111;
+      padding: 40px 60px;
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       justify-content: space-between;
-      gap: 40px;
-      margin-bottom: 48px;
+      gap: 32px;
       flex-wrap: wrap;
     }
 
     .footer-brand {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
     }
 
     .footer-logo {
-      font-size: 28px;
-      color: #E8E4D9;
+      font-size: 20px;
+      color: #F0EDE6;
       letter-spacing: 0.2em;
     }
 
     .footer-tagline {
-      font-size: 13px;
-      color: rgba(232, 228, 217, 0.5);
+      font-size: 12px;
+      color: rgba(240,237,230,0.35);
     }
 
     .footer-links {
       display: flex;
-      gap: 28px;
-      flex-wrap: wrap;
+      gap: 32px;
       list-style: none;
+      flex-wrap: wrap;
     }
 
     .footer-links a {
       font-size: 13px;
-      color: rgba(232, 228, 217, 0.6);
+      color: rgba(240,237,230,0.4);
       text-decoration: none;
       transition: color 0.2s;
     }
 
-    .footer-links a:hover {
-      color: rgba(232, 228, 217, 0.9);
-    }
-
-    .footer-bottom {
-      border-top: 1px solid rgba(232, 228, 217, 0.08);
-      padding-top: 24px;
-    }
+    .footer-links a:hover { color: rgba(240,237,230,0.8); }
 
     .footer-copy {
       font-size: 12px;
-      color: rgba(232, 228, 217, 0.4);
+      color: rgba(240,237,230,0.3);
     }
 
-    /* ── SCROLL ANIMATIONS ────────────────────────────── */
+    /* ── SCROLL REVEAL ────────────────────────────────── */
     .reveal {
       opacity: 0;
       transform: translateY(24px);
@@ -676,101 +701,76 @@
     }
 
     /* ── RESPONSIVE ───────────────────────────────────── */
-    @media (max-width: 1200px) {
-      .advantages-grid {
-        grid-template-columns: repeat(3, 1fr);
-      }
-    }
-
     @media (max-width: 1024px) {
-      .pricing-grid {
-        grid-template-columns: 1fr;
-        max-width: 520px;
-        margin: 0 auto;
-      }
+      nav { padding: 0 32px; }
 
-      .contacts-grid {
-        grid-template-columns: 1fr;
-        gap: 60px;
-      }
+      .nav-links, .btn-nav { display: none; }
+      .hamburger { display: flex; }
 
-      .nav-links,
-      .nav-buttons {
-        display: none;
-      }
+      #hero { padding: 0 0 80px 32px; }
+      .hero-stats { padding: 20px 32px; }
+      .stat-item { padding: 0 20px; }
 
-      .hamburger {
-        display: flex;
-      }
+      #advantages, #stages, #pricing, #contacts { padding: 80px 32px; }
+      #telegram { padding: 60px 32px; }
+      footer { padding: 32px; }
+
+      .contacts-grid { grid-template-columns: 1fr; gap: 60px; }
     }
 
     @media (max-width: 768px) {
-      .nav-inner {
-        padding: 0 20px;
+      nav { padding: 0 20px; }
+
+      .mobile-overlay { padding: 0 20px; }
+
+      #hero {
+        padding: 0;
+        align-items: flex-end;
       }
 
-      .advantages-grid {
-        grid-template-columns: repeat(2, 1fr);
+      .hero-card {
+        max-width: 100%;
+        width: 100%;
+        margin-bottom: 64px;
+        border-top-width: 2px;
       }
 
-      .section-title {
-        font-size: 34px;
+      .hero-stats {
+        padding: 16px 20px;
+        gap: 0;
+        overflow-x: auto;
       }
 
-      .hero-text-block {
-        padding: 28px 28px;
-      }
+      .stat-item { padding: 0 16px; min-width: 90px; }
+      .stat-number { font-size: 28px; }
 
-      section {
-        padding: 70px 0;
-      }
-
-      .container {
-        padding: 0 20px;
-      }
-
-      .stage-number {
-        font-size: 64px;
-        width: 90px;
-      }
+      .section-title { font-size: 38px; }
 
       .stage-item {
-        gap: 20px;
+        grid-template-columns: 60px 1fr;
       }
 
-      .contacts-grid {
-        gap: 48px;
+      .stage-desc {
+        grid-column: 2;
+        text-align: left;
+        margin-top: 6px;
       }
 
-      .footer-top {
-        flex-direction: column;
-        gap: 28px;
-      }
+      .pricing-grid { grid-template-columns: 1fr; }
+
+      .tg-inner { flex-direction: column; align-items: flex-start; gap: 28px; }
+
+      #advantages, #stages, #pricing, #contacts { padding: 60px 20px; }
+      #telegram { padding: 60px 20px; }
+      footer { padding: 32px 20px; flex-direction: column; align-items: flex-start; gap: 24px; }
     }
 
     @media (max-width: 480px) {
-      .advantages-grid {
-        grid-template-columns: 1fr;
-      }
+      .hero-card { padding: 28px 24px; }
+      .hero-buttons { flex-direction: column; }
+      .hero-buttons a { text-align: center; }
 
-      .hero-buttons {
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .hero-buttons .btn {
-        width: 100%;
-        max-width: 300px;
-        justify-content: center;
-      }
-
-      .stage-number {
-        display: none;
-      }
-
-      .stage-item {
-        gap: 0;
-      }
+      .adv-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -780,13 +780,10 @@
   <nav id="main-nav">
     <div class="nav-inner">
       <div class="nav-left">
-        <div class="logo-square"></div>
-        <div class="nav-brand">
-          <span class="nav-title">AXIS</span>
-          <span class="nav-phone">8 925 000-00-00</span>
-        </div>
+        <div class="logo-sq"></div>
+        <span class="nav-name">Точка контроля</span>
+        <span class="nav-phone">8 925 112-99-95</span>
       </div>
-
       <div class="nav-right">
         <ul class="nav-links">
           <li><a href="#advantages">Услуги</a></li>
@@ -794,345 +791,310 @@
           <li><a href="#pricing">Тарифы</a></li>
           <li><a href="#contacts">Контакты</a></li>
         </ul>
-        <div class="nav-buttons">
-          <a href="#telegram" class="btn btn-primary">Оставить заявку</a>
-          <a href="#contacts" class="btn btn-ghost">Получить консультацию</a>
-        </div>
+        <a href="#telegram" class="btn-nav">Оставить заявку →</a>
       </div>
-
       <button class="hamburger" id="hamburger" aria-label="Меню">
-        <span></span>
-        <span></span>
-        <span></span>
+        <span></span><span></span><span></span>
       </button>
     </div>
   </nav>
 
-  <!-- Mobile overlay -->
+  <!-- Mobile menu -->
   <div class="mobile-overlay" id="mobile-overlay">
     <ul class="mobile-nav-links">
-      <li><a href="#advantages" class="mobile-link">Услуги</a></li>
-      <li><a href="#stages" class="mobile-link">Процесс</a></li>
-      <li><a href="#pricing" class="mobile-link">Тарифы</a></li>
-      <li><a href="#contacts" class="mobile-link">Контакты</a></li>
+      <li><a href="#advantages" class="m-link">Услуги</a></li>
+      <li><a href="#stages" class="m-link">Процесс</a></li>
+      <li><a href="#pricing" class="m-link">Тарифы</a></li>
+      <li><a href="#contacts" class="m-link">Контакты</a></li>
     </ul>
-    <div class="mobile-buttons">
-      <a href="#telegram" class="btn btn-primary mobile-link">Оставить заявку</a>
-      <a href="#contacts" class="btn btn-ghost mobile-link">Получить консультацию</a>
-    </div>
+    <a href="#telegram" class="btn-nav m-link">Оставить заявку →</a>
   </div>
 
-  <!-- ── BLOCK I — HERO ───────────────────────────────── -->
+  <!-- ── HERO ────────────────────────────────────────── -->
   <section id="hero">
-    <div class="hero-text-block">
-      <span class="hero-overline">Независимый контроль</span>
+    <div class="hero-card reveal">
+      <span class="hero-label">Технический контроль</span>
       <h1 class="hero-heading">Управление строительными проектами</h1>
-      <p class="hero-subheading">Контроль бюджета, сроков и качества</p>
+      <p class="hero-sub">Контроль бюджета, сроков и качества</p>
       <div class="hero-buttons">
-        <a href="#telegram" class="btn btn-primary">Оставить заявку ↗</a>
-        <a href="#contacts" class="btn btn-ghost">Получить консультацию ↗</a>
+        <a href="#telegram" class="btn-primary">Оставить заявку →</a>
+        <a href="#stages" class="btn-ghost-dark">Как мы работаем</a>
+      </div>
+    </div>
+
+    <div class="hero-stats">
+      <div class="stat-item">
+        <span class="stat-number">87+</span>
+        <span class="stat-label">объектов</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">4.9</span>
+        <span class="stat-label">рейтинг</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">0</span>
+        <span class="stat-label">просрочек</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">от 3%</span>
+        <span class="stat-label">от бюджета</span>
       </div>
     </div>
   </section>
 
-  <!-- ── BLOCK II — ADVANTAGES ────────────────────────── -->
+  <!-- ── ADVANTAGES ─────────────────────────────────── -->
   <section id="advantages">
-    <div class="container">
-      <h2 class="section-title reveal">Почему выбирают нас</h2>
-      <div class="advantages-grid">
+    <span class="section-label reveal">01</span>
+    <h2 class="section-title reveal">Почему выбирают нас</h2>
+    <div class="adv-grid">
 
-        <div class="adv-card reveal">
-          <span class="adv-number">01</span>
-          <h3 class="adv-title">Экономия времени и нервов</h3>
-          <p class="adv-desc">Вы занимаетесь своим делом. Мы берём на себя всё взаимодействие с подрядчиками.</p>
-        </div>
-
-        <div class="adv-card reveal">
-          <span class="adv-number">02</span>
-          <h3 class="adv-title">Контроль бюджета</h3>
-          <p class="adv-desc">Фиксируем расходы и предотвращаем необдуманные траты. Прозрачная смета без скрытых платежей.</p>
-        </div>
-
-        <div class="adv-card reveal">
-          <span class="adv-number">03</span>
-          <h3 class="adv-title">Контроль сроков</h3>
-          <p class="adv-desc">Жёсткий контроль графика. Фото и видеоотчёты по каждому этапу в реальном времени.</p>
-        </div>
-
-        <div class="adv-card reveal">
-          <span class="adv-number">04</span>
-          <h3 class="adv-title">Контроль качества</h3>
-          <p class="adv-desc">Проверяем подрядчиков и материалы на каждом этапе. Независимая экспертиза в ваших интересах.</p>
-        </div>
-
-        <div class="adv-card reveal">
-          <span class="adv-number">05</span>
-          <h3 class="adv-title">Прозрачность работ</h3>
-          <p class="adv-desc">Вы видите всё что происходит на объекте. Еженедельные отчёты и онлайн-доступ к статусу.</p>
-        </div>
-
+      <div class="adv-card reveal">
+        <span class="adv-num">01</span>
+        <h3 class="adv-title">Экономия времени и нервов</h3>
+        <p class="adv-text">Вы занимаетесь своим делом. Мы берём на себя всё взаимодействие с подрядчиками.</p>
+        <a href="#telegram" class="adv-link">Подробнее →</a>
       </div>
+
+      <div class="adv-card reveal">
+        <span class="adv-num">02</span>
+        <h3 class="adv-title">Контроль бюджета</h3>
+        <p class="adv-text">Фиксируем расходы и предотвращаем необдуманные траты. Прозрачная смета без скрытых платежей.</p>
+        <a href="#telegram" class="adv-link">Подробнее →</a>
+      </div>
+
+      <div class="adv-card reveal">
+        <span class="adv-num">03</span>
+        <h3 class="adv-title">Контроль сроков</h3>
+        <p class="adv-text">Жёсткий контроль графика. Фото и видеоотчёты по каждому этапу в реальном времени.</p>
+        <a href="#telegram" class="adv-link">Подробнее →</a>
+      </div>
+
+      <div class="adv-card reveal">
+        <span class="adv-num">04</span>
+        <h3 class="adv-title">Контроль качества</h3>
+        <p class="adv-text">Проверяем подрядчиков и материалы на каждом этапе. Независимая экспертиза в ваших интересах.</p>
+        <a href="#telegram" class="adv-link">Подробнее →</a>
+      </div>
+
+      <div class="adv-card reveal">
+        <span class="adv-num">05</span>
+        <h3 class="adv-title">Прозрачность работ</h3>
+        <p class="adv-text">Вы видите всё что происходит на объекте. Еженедельные отчёты и онлайн-доступ к статусу.</p>
+        <a href="#telegram" class="adv-link">Подробнее →</a>
+      </div>
+
     </div>
   </section>
 
-  <!-- ── BLOCK III — STAGES ────────────────────────────── -->
+  <!-- ── STAGES ──────────────────────────────────────── -->
   <section id="stages">
-    <div class="container">
-      <h2 class="section-title reveal">Этапы работ</h2>
-      <ul class="stages-list">
+    <span class="section-label reveal">02</span>
+    <h2 class="section-title reveal">Этапы работ</h2>
+    <ul class="stages-list">
 
-        <li class="stage-item reveal">
-          <span class="stage-number">01</span>
-          <div class="stage-content">
-            <h3 class="stage-title">Первичная консультация</h3>
-            <p class="stage-desc">Изучаем проект, задачи и бюджет.</p>
-          </div>
-        </li>
+      <li class="stage-item reveal">
+        <span class="stage-num">/01</span>
+        <h3 class="stage-title">Первичная консультация</h3>
+        <p class="stage-desc">Изучаем проект, задачи и бюджет.</p>
+      </li>
 
-        <li class="stage-item reveal">
-          <span class="stage-number">02</span>
-          <div class="stage-content">
-            <h3 class="stage-title">Анализ и смета</h3>
-            <p class="stage-desc">Проверяем смету, выявляем риски переплат.</p>
-          </div>
-        </li>
+      <li class="stage-item reveal">
+        <span class="stage-num">/02</span>
+        <h3 class="stage-title">Анализ и смета</h3>
+        <p class="stage-desc">Проверяем смету, выявляем риски переплат.</p>
+      </li>
 
-        <li class="stage-item reveal">
-          <span class="stage-number">03</span>
-          <div class="stage-content">
-            <h3 class="stage-title">Подбор подрядчиков</h3>
-            <p class="stage-desc">Находим и проверяем исполнителей.</p>
-          </div>
-        </li>
+      <li class="stage-item reveal">
+        <span class="stage-num">/03</span>
+        <h3 class="stage-title">Подбор подрядчиков</h3>
+        <p class="stage-desc">Находим и проверяем исполнителей.</p>
+      </li>
 
-        <li class="stage-item reveal">
-          <span class="stage-number">04</span>
-          <div class="stage-content">
-            <h3 class="stage-title">Контроль хода работ</h3>
-            <p class="stage-desc">Выезды, фотоотчёты, еженедельные сводки.</p>
-          </div>
-        </li>
+      <li class="stage-item reveal">
+        <span class="stage-num">/04</span>
+        <h3 class="stage-title">Контроль хода работ</h3>
+        <p class="stage-desc">Выезды, фотоотчёты, еженедельные сводки.</p>
+      </li>
 
-        <li class="stage-item reveal">
-          <span class="stage-number">05</span>
-          <div class="stage-content">
-            <h3 class="stage-title">Контроль качества</h3>
-            <p class="stage-desc">Независимая проверка на каждом этапе.</p>
-          </div>
-        </li>
+      <li class="stage-item reveal">
+        <span class="stage-num">/05</span>
+        <h3 class="stage-title">Контроль качества</h3>
+        <p class="stage-desc">Независимая проверка на каждом этапе.</p>
+      </li>
 
-        <li class="stage-item reveal">
-          <span class="stage-number">06</span>
-          <div class="stage-content">
-            <h3 class="stage-title">Контроль бюджета</h3>
-            <p class="stage-desc">Фиксируем расходы, согласуем каждую трату.</p>
-          </div>
-        </li>
+      <li class="stage-item reveal">
+        <span class="stage-num">/06</span>
+        <h3 class="stage-title">Контроль бюджета</h3>
+        <p class="stage-desc">Фиксируем расходы, согласуем каждую трату.</p>
+      </li>
 
-        <li class="stage-item reveal">
-          <span class="stage-number">07</span>
-          <div class="stage-content">
-            <h3 class="stage-title">Приёмка объекта</h3>
-            <p class="stage-desc">Представляем ваши интересы при финальной сдаче.</p>
-          </div>
-        </li>
+      <li class="stage-item reveal">
+        <span class="stage-num">/07</span>
+        <h3 class="stage-title">Приёмка объекта</h3>
+        <p class="stage-desc">Представляем ваши интересы при финальной сдаче.</p>
+      </li>
 
-      </ul>
-    </div>
+    </ul>
   </section>
 
-  <!-- ── BLOCK IV — PRICING ─────────────────────────────── -->
+  <!-- ── PRICING ─────────────────────────────────────── -->
   <section id="pricing">
-    <div class="container">
-      <h2 class="section-title reveal">Тарифы</h2>
-      <div class="pricing-grid">
+    <span class="section-label reveal">03</span>
+    <h2 class="section-title reveal">Тарифы</h2>
+    <div class="pricing-grid">
 
-        <div class="price-card reveal">
-          <h3 class="price-name">Технический надзор</h3>
-          <p class="price-label">Фиксированная стоимость</p>
-          <ul class="price-list">
-            <li>Выезды на объект</li>
-            <li>Фотоотчёты</li>
-            <li>Контроль качества</li>
-            <li>Рекомендации</li>
-          </ul>
-          <a href="#telegram" class="btn btn-ghost">Оставить заявку</a>
-        </div>
-
-        <div class="price-card featured reveal">
-          <span class="price-badge">ПОПУЛЯРНЫЙ</span>
-          <h3 class="price-name">Полное управление</h3>
-          <p class="price-label">% от бюджета объекта</p>
-          <ul class="price-list">
-            <li>Календарный план</li>
-            <li>Контроль бюджета</li>
-            <li>Подбор подрядчиков</li>
-            <li>Отчётность</li>
-            <li>Приёмка</li>
-            <li>Персональный менеджер</li>
-          </ul>
-          <a href="#telegram" class="btn btn-cream">Оставить заявку</a>
-        </div>
-
-        <div class="price-card reveal">
-          <h3 class="price-name">Антикризис</h3>
-          <p class="price-label">Повышенный тариф</p>
-          <ul class="price-list">
-            <li>Аудит ситуации</li>
-            <li>Выявление нарушений</li>
-            <li>Переговоры</li>
-            <li>Восстановление контроля</li>
-            <li>Новый план</li>
-          </ul>
-          <a href="#telegram" class="btn btn-ghost">Оставить заявку</a>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- ── BLOCK V — TELEGRAM ─────────────────────────────── -->
-  <section id="telegram">
-    <div class="container" style="text-align: center;">
-      <h2 class="section-title reveal">Получите первичный анализ</h2>
-      <p class="tg-subtitle reveal">Ответьте на несколько вопросов и получите рекомендации</p>
-      <div class="reveal">
-        <a href="https://t.me/axis_control" class="btn btn-primary" target="_blank" rel="noopener">↗ Написать в Telegram</a>
-      </div>
-      <p class="tg-note reveal">Отвечаем в течение 2 часов</p>
-    </div>
-  </section>
-
-  <!-- ── BLOCK VI — CONTACTS + CASES ───────────────────── -->
-  <section id="contacts">
-    <div class="container">
-      <div class="contacts-grid">
-
-        <!-- Contacts column -->
-        <div>
-          <h2 class="contacts-title reveal">Контакты</h2>
-
-          <div class="contact-row reveal">
-            <svg class="contact-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M3 5a2 2 0 012-2h2.28a1 1 0 01.95.68l1.1 3.3a1 1 0 01-.23 1.02L7.91 9.2a12.05 12.05 0 005.9 5.9l1.2-1.2a1 1 0 011.01-.24l3.3 1.1a1 1 0 01.68.95V17a2 2 0 01-2 2C7.16 19 1 12.84 1 5.5A2.5 2.5 0 013 3v2z"/>
-            </svg>
-            <a href="tel:89250000000" class="contact-text">8 925 000-00-00</a>
-          </div>
-
-          <div class="contact-row reveal">
-            <svg class="contact-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="2" y="4" width="16" height="12" rx="2"/>
-              <path d="M2 7l8 5 8-5"/>
-            </svg>
-            <a href="mailto:info@axis-control.ru" class="contact-text">info@axis-control.ru</a>
-          </div>
-
-          <div class="contact-row reveal">
-            <svg class="contact-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M17.5 3L1.5 9l6 2.5L10 17.5 17.5 3z"/>
-              <path d="M7.5 11.5l4-4"/>
-            </svg>
-            <a href="https://t.me/axis_control" class="contact-text" target="_blank" rel="noopener">@axis_control</a>
-          </div>
-        </div>
-
-        <!-- Cases column -->
-        <div>
-          <h2 class="cases-title reveal">Опыт работы</h2>
-          <div class="cases-list">
-            <div class="case-card reveal">
-              <p>Кейс 1 — В разработке</p>
-            </div>
-            <div class="case-card reveal">
-              <p>Кейс 2 — В разработке</p>
-            </div>
-            <div class="case-card reveal">
-              <p>Кейс 3 — В разработке</p>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- ── FOOTER ──────────────────────────────────────────── -->
-  <footer>
-    <div class="footer-inner">
-      <div class="footer-top">
-        <div class="footer-brand">
-          <span class="footer-logo">AXIS</span>
-          <span class="footer-tagline">Управление строительными проектами</span>
-        </div>
-        <ul class="footer-links">
-          <li><a href="#advantages">Услуги</a></li>
-          <li><a href="#stages">Процесс</a></li>
-          <li><a href="#pricing">Тарифы</a></li>
-          <li><a href="#contacts">Контакты</a></li>
+      <div class="price-card reveal">
+        <h3 class="price-name">Технический надзор</h3>
+        <p class="price-sub">Фиксированная стоимость</p>
+        <ul class="price-list">
+          <li>Выезды на объект</li>
+          <li>Фотоотчёты</li>
+          <li>Контроль качества</li>
+          <li>Рекомендации</li>
         </ul>
+        <a href="#telegram" class="price-btn">Оставить заявку →</a>
       </div>
-      <div class="footer-bottom">
-        <p class="footer-copy">© 2025 AXIS. Все права защищены.</p>
+
+      <div class="price-card featured reveal">
+        <span class="price-badge">ПОПУЛЯРНЫЙ</span>
+        <h3 class="price-name">Полное управление</h3>
+        <p class="price-sub">% от бюджета объекта</p>
+        <ul class="price-list">
+          <li>Календарный план</li>
+          <li>Контроль бюджета</li>
+          <li>Подбор подрядчиков</li>
+          <li>Отчётность</li>
+          <li>Приёмка</li>
+          <li>Персональный менеджер</li>
+        </ul>
+        <a href="#telegram" class="price-btn">Оставить заявку →</a>
       </div>
+
+      <div class="price-card reveal">
+        <h3 class="price-name">Антикризис</h3>
+        <p class="price-sub">Повышенный тариф</p>
+        <ul class="price-list">
+          <li>Аудит ситуации</li>
+          <li>Выявление нарушений</li>
+          <li>Переговоры</li>
+          <li>Восстановление контроля</li>
+          <li>Новый план</li>
+        </ul>
+        <a href="#telegram" class="price-btn">Оставить заявку →</a>
+      </div>
+
     </div>
+  </section>
+
+  <!-- ── TELEGRAM ────────────────────────────────────── -->
+  <section id="telegram">
+    <div class="tg-inner">
+      <div class="tg-left reveal">
+        <p class="tg-heading">Получите первичный анализ</p>
+        <p class="tg-sub">Ответьте на вопросы и получите рекомендации</p>
+      </div>
+      <a href="https://t.me/axis_control" class="btn-tg reveal" target="_blank" rel="noopener">
+        Написать в Telegram →
+      </a>
+    </div>
+  </section>
+
+  <!-- ── CONTACTS ────────────────────────────────────── -->
+  <section id="contacts">
+    <div class="contacts-grid">
+
+      <div>
+        <span class="section-label reveal">04</span>
+        <h2 class="contacts-title reveal">Контакты</h2>
+
+        <div class="contact-row reveal">
+          <span class="contact-row-label">Телефон</span>
+          <a href="tel:89251129995" class="contact-row-value">8 925 112-99-95</a>
+        </div>
+        <div class="contact-row reveal">
+          <span class="contact-row-label">Email</span>
+          <a href="mailto:info@axis-control.ru" class="contact-row-value">info@axis-control.ru</a>
+        </div>
+        <div class="contact-row reveal">
+          <span class="contact-row-label">Telegram</span>
+          <a href="https://t.me/axis_control" class="contact-row-value" target="_blank" rel="noopener">@axis_control</a>
+        </div>
+      </div>
+
+      <div>
+        <h2 class="cases-title reveal">Опыт работы</h2>
+        <div class="cases-list">
+          <div class="case-card reveal">Кейс 1 — В разработке</div>
+          <div class="case-card reveal">Кейс 2 — В разработке</div>
+          <div class="case-card reveal">Кейс 3 — В разработке</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── FOOTER ──────────────────────────────────────── -->
+  <footer>
+    <div class="footer-brand">
+      <span class="footer-logo">Точка контроля</span>
+      <span class="footer-tagline">Управление строительными проектами</span>
+    </div>
+    <ul class="footer-links">
+      <li><a href="#advantages">Услуги</a></li>
+      <li><a href="#stages">Процесс</a></li>
+      <li><a href="#pricing">Тарифы</a></li>
+      <li><a href="#contacts">Контакты</a></li>
+    </ul>
+    <span class="footer-copy">© 2025 Точка контроля. Все права защищены.</span>
   </footer>
 
-  <!-- ── JAVASCRIPT ──────────────────────────────────────── -->
+  <!-- ── JAVASCRIPT ──────────────────────────────────── -->
   <script>
-    // Nav scroll shadow
+    // Nav scroll
     const nav = document.getElementById('main-nav');
     window.addEventListener('scroll', () => {
       nav.classList.toggle('scrolled', window.scrollY > 10);
     }, { passive: true });
 
-    // Hamburger menu
+    // Hamburger
     const hamburger = document.getElementById('hamburger');
-    const overlay = document.getElementById('mobile-overlay');
+    const mobileOverlay = document.getElementById('mobile-overlay');
 
-    function closeMobileMenu() {
+    function closeMenu() {
       hamburger.classList.remove('open');
-      overlay.classList.remove('open');
+      mobileOverlay.classList.remove('open');
       document.body.style.overflow = '';
     }
 
     hamburger.addEventListener('click', () => {
-      const isOpen = overlay.classList.contains('open');
-      if (isOpen) {
-        closeMobileMenu();
-      } else {
+      const open = mobileOverlay.classList.contains('open');
+      if (open) { closeMenu(); }
+      else {
         hamburger.classList.add('open');
-        overlay.classList.add('open');
+        mobileOverlay.classList.add('open');
         document.body.style.overflow = 'hidden';
       }
     });
 
-    document.querySelectorAll('.mobile-link').forEach(link => {
-      link.addEventListener('click', closeMobileMenu);
-    });
+    document.querySelectorAll('.m-link').forEach(l => l.addEventListener('click', closeMenu));
 
-    // IntersectionObserver scroll animations
+    // IntersectionObserver scroll reveal with stagger
     const revealEls = document.querySelectorAll('.reveal');
 
-    const observer = new IntersectionObserver((entries) => {
+    const io = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          // Find siblings in same parent and stagger
-          const parent = entry.target.parentElement;
-          const siblings = Array.from(parent.querySelectorAll(':scope > .reveal'));
-          const idx = siblings.indexOf(entry.target);
-          const delay = idx >= 0 ? idx * 0.08 : 0;
-
-          entry.target.style.transitionDelay = delay + 's';
-          entry.target.classList.add('visible');
-          observer.unobserve(entry.target);
-        }
+        if (!entry.isIntersecting) return;
+        const el = entry.target;
+        const parent = el.parentElement;
+        const siblings = Array.from(parent.querySelectorAll(':scope > .reveal'));
+        const idx = siblings.indexOf(el);
+        el.style.transitionDelay = (idx >= 0 ? idx * 0.08 : 0) + 's';
+        el.classList.add('visible');
+        io.unobserve(el);
       });
-    }, {
-      threshold: 0.12,
-      rootMargin: '0px 0px -40px 0px'
-    });
+    }, { threshold: 0.1, rootMargin: '0px 0px -32px 0px' });
 
-    revealEls.forEach(el => observer.observe(el));
+    revealEls.forEach(el => io.observe(el));
   </script>
 
 </body>

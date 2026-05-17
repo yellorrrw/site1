@@ -2,9 +2,9 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "axis-v2",
+      "name": "AXIS Static Server",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "3456", "--directory", "axis-v2"],
+      "runtimeArgs": ["-m", "http.server", "3456", "--directory", "/Users/yellorrrw/Desktop/Ремонт квартир управление 1"],
       "port": 3456
     }
   ]
